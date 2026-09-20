@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Makina İthalat Denetimi — Belge Eşleme Tablosu İnceleme Formu</title>
+<style>
+  :root { --bg:#fff; --fg:#1a1a1a; --muted:#5b6470; --line:#d8dde3; --accent:#0b5cab; --soft:#f4f6f8; --warn:#fff8e6; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font:16px/1.6 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; }
+  main { max-width: 980px; margin:0 auto; padding: 32px 16px 140px; }
+  h1 { font-size:1.55rem; line-height:1.3; margin:0 0 .5rem; }
+  h2 { font-size:1.15rem; margin:2.5rem 0 .75rem; padding-top:1.25rem; border-top:2px solid var(--line); }
+  h3 { font-size:1rem; margin:1.5rem 0 .5rem; }
+  p, li { margin:.6rem 0; }
+  .meta { color:var(--muted); font-size:.92rem; margin-bottom:1.5rem; }
+  .meta b { color:var(--fg); }
+  blockquote { margin:1rem 0; padding:.75rem 1rem; background:var(--soft);
+               border-left:4px solid var(--accent); font-weight:600; }
+  .note { background:var(--warn); border:1px solid #e8d9a8; padding:.75rem 1rem; border-radius:6px; }
+  table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.92rem; }
+  th, td { border:1px solid var(--line); padding:.5rem .6rem; text-align:left; vertical-align:top; }
+  th { background:var(--soft); font-weight:600; }
+  td.tick, th.tick { width:38px; text-align:center; }
+  tbody tr:has(input[type=checkbox]:checked) { background:#eef6ff; }
+  input[type=checkbox], input[type=radio] { width:18px; height:18px; accent-color:var(--accent); cursor:pointer; }
+  input[type=text], input[type=date], textarea {
+      width:100%; font:inherit; font-size:.92rem; padding:.4rem .5rem;
+      border:1px solid var(--line); border-radius:4px; background:#fff; color:inherit; }
+  textarea { min-height:5rem; resize:vertical; }
+  .yn { white-space:nowrap; }
+  .yn label { margin-right:.75rem; cursor:pointer; }
+  code { background:var(--soft); padding:.1rem .3rem; border-radius:3px; font-size:.88em; }
+  .checklist { list-style:none; padding:0; }
+  .checklist li { display:flex; gap:.6rem; align-items:flex-start; margin:.5rem 0; }
+  .checklist input { margin-top:.25rem; flex:none; }
+  .satirlar td { font-size:.86rem; }
+  .satirlar .gtip { font-family:ui-monospace,Consolas,monospace; white-space:nowrap; }
+  .sayac { font-weight:600; }
+  .sayac.az { color:#a33; }
+  .sayac.ok { color:#1a7a3c; }
+  .imza td:last-child { height:2.2rem; }
+  .bar { position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid var(--line);
+         padding:.75rem 16px; display:flex; gap:1rem; align-items:center; justify-content:center;
+         flex-wrap:wrap; box-shadow:0 -2px 12px rgba(0,0,0,.06); }
+  button { font:inherit; font-weight:600; padding:.6rem 1.2rem; border-radius:6px; cursor:pointer;
+           border:1px solid var(--accent); background:var(--accent); color:#fff; }
+  button.ikincil { background:#fff; color:var(--accent); }
+  .durum { color:var(--muted); font-size:.88rem; }
+  @media (max-width:640px) {
+    .satirlar, .satirlar thead, .satirlar tbody, .satirlar tr, .satirlar td { display:block; width:100%; }
+    .satirlar thead { display:none; }
+    .satirlar tr { border:1px solid var(--line); margin-bottom:.5rem; padding:.5rem; }
+    .satirlar td { border:0; padding:.15rem 0; }
+  }
+  @media print { .bar { display:none; } body { font-size:12px; } }
+</style>
+</head>
+<body>
+<main>
+<form id="form">
+
+<h1>Makina İthalat Denetimi — Belge Eşleme Tablosu İnceleme Formu</h1>
+
+<p class="meta">
+<b>Konu:</b> Ürün Güvenliği ve Denetimi: <b>2026/32</b> sayılı Makinaların İthalat Denetimi Tebliği'nden çıkarılmış "GTİP → dosyada bulunması gereken belgeler" tablosunun uzman incelemesi.<br>
+<b>İncelemeyi yapan:</b> bağımsız gümrük müşaviri / alan uzmanı. &nbsp;·&nbsp; <b>Tahmini süre:</b> 45–60 dakika.<br>
+<b>Bu formla birlikte gönderilenler:</b> 307 satırlık eşleme tablosu (Ek-2/A: 22 satır, Ek-2/B: 285 satır) · tebliğin Resmî Gazete nüshası.
+</p>
+
+<p class="note">Cevaplarınız tarayıcınızda otomatik saklanır; sayfayı kapatıp geri dönseniz kaldığınız yerden devam edersiniz. Bitirince sayfanın altındaki <b>“Cevapları dosyaya kaydet”</b> düğmesine basın — bilgisayarınıza bir dosya iner, onu bize iletmeniz yeterli. Hiçbir bilgi bu sayfadan kendiliğinden gönderilmez.</p>
+
+<h2>0. Ne inceliyorsunuz, neden</h2>
+
+<p>Bir ithalat dosyası gümrüğe gitmeden önce ön kontrolden geçiriliyor. Ön kontrolün tek bir sorusu var:</p>
+
+<blockquote>“Beyan edilen GTİP için tebliğin aradığı belgeler dosyada var mı, belgelerdeki bilgiler birbirini tutuyor mu?”</blockquote>
+
+<p>Bu soruyu cevaplayabilmek için tebliğin Ek-2/A ve Ek-2/B listelerindeki <b>307 GTİP satırının her birine, o satır için aranacak belgeler</b> yazıldı. Sizden istediğimiz, bu eşlemenin mevzuata uygun olup olmadığını teyit etmeniz.</p>
+
+<p><b>İnceleme sonucu imzalanmadan tablo kullanıma alınmayacak.</b></p>
+
+<h3>Neyi incelemiyorsunuz</h3>
+<ul>
+<li><b>307 satırın tamamını okumanız gerekmiyor.</b> GTİP kodları ve madde adları tebliğin Ek-2 tablolarından birebir kopyalandı. Asıl teyit edilecek olan <b>Madde 2'deki türetme mantığıdır</b> (hangi yönetmelik hangi belgeyi gerektirir). Madde 4'te ayrıca örnekleme yapmanız istenen 52 kritik satır var.</li>
+<li>Ön kontrolün <b>karar verme yetkisi yok.</b> Ürünün mevzuata uygun olup olmadığına, kapsam dışı olup olmadığına ve beyana ne yazılacağına her zaman müşavir karar verir. Ön kontrol yalnızca “şu belge dosyada görünmüyor” veya “faturadaki model ile beyandaki model farklı” der; bulguyu müşavir değerlendirir, kapatır ya da dikkate almaz.</li>
+<li>Belgelerin <b>içeriği denetlenmiyor.</b> Bir uygunluk beyanının doğru düzenlenip düzenlenmediği, teknik dosyanın yeterliliği vb. kapsam dışı.</li>
+</ul>
+
+<h3>Tabloda geçen yönetmelik kısaltmaları</h3>
+<p>Aşağıdaki kısaltmalar, tebliğin <b>Ek-1</b>'indeki “İlgili Yönetmelik” sütununun kısa yazımıdır; Madde 2 ve Madde 4 tablolarında bu hâlleriyle kullanılıyor.</p>
+<table>
+<thead><tr><th style="width:170px">Kısaltma</th><th>Tebliğ Ek-1'deki tam adı</th></tr></thead>
+<tbody>
+<tr><td><b>Makine</b></td><td>Makina Emniyeti Yönetmeliği (2006/42/AT)</td></tr>
+<tr><td><b>LVD</b></td><td>Belirli Gerilim Sınırları İçin Tasarlanan Elektrikli Ekipman ile İlgili Yönetmelik (2014/35/AB) — <i>Low Voltage Directive</i>, alçak gerilim</td></tr>
+<tr><td><b>EMC</b></td><td>Elektromanyetik Uyumluluk Yönetmeliği (2014/30/AB) — <i>Electromagnetic Compatibility</i></td></tr>
+<tr><td><b>Emisyon</b></td><td>Karayolu Dışında Kullanılan Hareketli Makinalara Takılan İçten Yanmalı Motorlar İçin Gaz ve Partikül Halindeki Kirletici Emisyon Sınırları ve Tip Onayı ile İlgili Gereklilikler Hakkında Yönetmelik (2016/1628/AB)</td></tr>
+<tr><td><b>Gürültü</b></td><td>Açık Alanda Kullanılan Teçhizat Tarafından Oluşturulan Çevredeki Gürültü Emisyonu ile İlgili Yönetmelik (2000/14/AT)</td></tr>
+<tr><td><b>Tarım Makinaları</b></td><td>Tarım ve Orman Araçlarının Tip Onayı ve Piyasa Gözetimi ve Denetimi Hakkında Yönetmelik (AB/167/2013)</td></tr>
+<tr><td><b>Eko-Tasarım</b></td><td>Enerji ile İlgili Ürünlerin Çevreye Duyarlı Tasarımına İlişkin Yönetmelik</td></tr>
+<tr><td><b>Enerji Etiketlemesi</b></td><td>Enerji Etiketlemesi Çerçeve Yönetmeliği</td></tr>
+</tbody>
+</table>
+<p>Belge adlarının kısaltmaları: <b>Uyg. Beyanı</b> = AB Uygunluk Beyanı (Ek-3/3) · <b>Tip Onay</b> = Tip Onay Belgesi (Ek-3/4) · <b>Gürültü</b> (belge sütununda) = Gürültü Sertifikası (Ek-3/5) · <b>CE/Etiket</b> = ürünün üzerindeki CE işareti ve ithalatçı bilgisi · <b>Fotoğraf</b> = ithal edilecek ürüne ait fotoğraflar (Ek-3/6).</p>
+
+<h2>1. Kaynak doğrulaması</h2>
+<table>
+<thead><tr><th class="tick">✔</th><th>Kontrol</th><th>Beklenen / cevabınız</th></tr></thead>
+<tbody>
+<tr><td class="tick"><input type="checkbox"></td><td>Tebliğ adı</td><td>Makinaların İthalat Denetimi Tebliği (Ürün Güvenliği ve Denetimi: <b>2026/32</b>)</td></tr>
+<tr><td class="tick"><input type="checkbox"></td><td>Resmî Gazete</td><td><b>31/12/2025</b>, sayı <b>33124 (4. Mükerrer)</b></td></tr>
+<tr><td class="tick"><input type="checkbox"></td><td>Yürürlük</td><td><b>1/1/2026</b> (MADDE 16); 1/1/2026 öncesi sevkler için 28/2/2026'ya kadar geçiş (GEÇİCİ MADDE 1)</td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td>Tebliğ <b>hâlâ yürürlükte ve değişmemiş</b> mi? Sonradan bir değişiklik tebliği yayımlandı mı?</td>
+    <td><span class="yn"><label><input type="radio" name="s1-yururluk" value="Evet"> Evet</label><label><input type="radio" name="s1-yururluk" value="Hayır"> Hayır</label></span>
+        <input type="text" placeholder="açıklama"></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td>İlgili yönetmelik hâlâ <b>Makina Emniyeti Yönetmeliği (2006/42/AT)</b> mi? (Tebliğin Ek-1'i 2006/42/AT diyor; AB'nin yeni Makine Tüzüğü 2023/1230 iç mevzuata alınmış görünmüyor)</td>
+    <td><span class="yn"><label><input type="radio" name="s1-yonetmelik" value="Evet"> Evet</label><label><input type="radio" name="s1-yonetmelik" value="Hayır"> Hayır</label></span>
+        <input type="text" placeholder="açıklama"></td></tr>
+</tbody>
+</table>
+
+<h2>2. Türetme tablosunun onayı ← <b>en önemli madde</b></h2>
+
+<p>Tebliğin <b>Ek-3</b>'ü TAREKS'e yüklenecek belgeleri numaralandırıyor. <b>MADDE 5/3</b> (İthalat Denetim Ön İzni) ve <b>MADDE 10/1</b> (fiili denetim) hangilerinin isteneceğini <i>“ürünün özelliğine göre 3, 4 ve 5 numaralı belgelerden bir veya birkaçı”</i> diye tarif ediyor — yani belge seçimini ürüne bırakıyor.</p>
+
+<p>Bu seçimi GTİP bazında belirlenebilir kılan tek veri, <b>Ek-2 tablolarındaki “İlgili Yönetmelik” sütunu.</b> Kurulan eşleme şu:</p>
+
+<table>
+<thead><tr><th class="tick">✔</th><th>Ek-2'deki yönetmelik etiketi</th><th>Aranacak Ek-3 belgesi</th><th>Etkilenen satır</th></tr></thead>
+<tbody>
+<tr><td class="tick"><input type="checkbox"></td><td>Makine · LVD · EMC · Eko-Tasarım · Enerji Etiketlemesi</td><td><b>#3 AB Uygunluk Beyanı</b></td><td>307 (tümü)</td></tr>
+<tr><td class="tick"><input type="checkbox"></td><td>Emisyon (2016/1628/AB) · Tarım Makinaları (AB/167/2013)</td><td><b>#4 Tip Onay Belgesi</b></td><td>26</td></tr>
+<tr><td class="tick"><input type="checkbox"></td><td>Gürültü (2000/14/AT)</td><td><b>#5 Gürültü Sertifikası</b></td><td>10</td></tr>
+<tr><td class="tick"><input type="checkbox"></td><td>Ürünün CE işareti ve ithalatçı bilgisi taşıması (2006/42/AT md. 16; “işaret kontrolü”, MADDE 3/d)</td><td><b>CE işareti / etiket</b></td><td>307 (tümü)</td></tr>
+<tr><td class="tick"><input type="checkbox"></td><td>Satırın <b>Ek-2/A</b> listesinde olması</td><td><b>#6 Ürün fotoğrafları</b></td><td>22</td></tr>
+</tbody>
+</table>
+
+<p>Ortaya çıkan dağılım: 255 satır yalnızca Uygunluk Beyanı + etiket · 25 satır + Tip Onay · 17 satır + fotoğraf · 5 satır + Gürültü + fotoğraf · 4 satır + Gürültü · 1 satır + Tip Onay + Gürültü.</p>
+
+<ul class="checklist">
+<li><input type="checkbox"><span>Bu eşlemeyi <b>onaylıyorum.</b></span></li>
+<li><input type="checkbox"><span><b>Ek-2/A</b> listesindeki ürünlerde her hâlükârda <b>İthalat Denetim Ön İzni</b> gerektiği (MADDE 5/5 ve 7/7) doğru anlaşılmış.</span></li>
+</ul>
+<p><label>Eksik / yanlış bulduğum nokta:<br><textarea placeholder="Madde 2 — eksik veya yanlış bulduklarınız"></textarea></label></p>
+
+<h2>3. Bilinçli olarak dışarıda bırakılanlar</h2>
+<p>Aşağıdakiler bu tabloya <b>kasten konulmadı.</b> Gerekçeleri okuyup katılıp katılmadığınızı işaretleyin:</p>
+<table>
+<thead><tr><th class="tick">✔</th><th>Dışarıda bırakılan</th><th>Gerekçe</th><th style="width:130px">Katılıyor musunuz?</th></tr></thead>
+<tbody>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td>Ek-3 #1 (konşimento / CMR / özet beyan / beyanname) ve #2 (fatura / proforma)</td>
+    <td>Bunlar ticari belgeler; her dosyada zaten aranıyor. Fatura veya taşıma belgesi eksikse <b>engel</b>, çeki listesi eksikse <b>uyarı</b> (birleşik fatura-çeki listesi meşru olduğu için). Bu tabloya da konsaydı aynı eksik belge iki kez bulgu üretirdi.</td>
+    <td class="yn"><label><input type="radio" name="s3-ticari" value="Evet"> Evet</label><label><input type="radio" name="s3-ticari" value="Hayır"> Hayır</label></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td><b>Test raporu</b></td>
+    <td>Makina için Ek-3'te sayılmıyor; yalnızca denetim biriminin isteyebileceği ilave belge (MADDE 10/3). Dosyada test raporu <b>varsa</b> tarihi eskiyse uyarı verilir; yokluğu engel sayılmaz.</td>
+    <td class="yn"><label><input type="radio" name="s3-test" value="Evet"> Evet</label><label><input type="radio" name="s3-test" value="Hayır"> Hayır</label></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td><b>Türkçe tercüme + Ticaret Müşavirliği/Ataşeliği onayı</b> şartı</td>
+    <td>Ek-2/A için gerçek bir şart; ancak bu ayrı bir <i>belge türü</i> değil, belgenin <i>niteliği</i>. Ayrı bir kontrol olarak eklenmesi gerekiyor → <b>S-2</b>.</td>
+    <td class="yn"><label><input type="radio" name="s3-tercume" value="Evet"> Evet</label><label><input type="radio" name="s3-tercume" value="Hayır"> Hayır</label></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td><b>Enerji etiketi</b> (“Enerji Etiketlemesi” yazan satırlar, örn. 8415.x klimalar)</td>
+    <td>Ek-3'te buna karşılık gelen ayrı bir belge yok; sonraki sürüme bırakıldı.</td>
+    <td class="yn"><label><input type="radio" name="s3-enerji" value="Evet"> Evet</label><label><input type="radio" name="s3-enerji" value="Hayır"> Hayır</label></td></tr>
+</tbody>
+</table>
+
+<h2>4. Kritik satır örneklemesi</h2>
+
+<p>Aşağıdaki 52 satır, <b>Ek-2/A listesinin tamamı (22 satır)</b> ile <b>Tip Onay veya Gürültü Sertifikası gerektiren satırların tamamıdır</b> — yani hata yapılırsa en pahalıya çıkacak olanlar.</p>
+
+<p class="note"><b>En az 10 tanesini</b> tebliğin Resmî Gazete nüshasıyla karşılaştırıp işaretleyin: GTİP doğru mu, “İlgili Yönetmelik” sütunu doğru aktarılmış mı, buna göre aranacak belgeler doğru mu?<br>
+İşaretlenen satır: <span id="sayac" class="sayac az">0 / 52</span></p>
+
+<table class="satirlar">
+<thead><tr><th class="tick">✔</th><th>GTİP</th><th>Liste</th><th>Madde adı (tebliğdeki hâli)</th><th>Yönetmelikler</th><th>Aranacak belgeler</th></tr></thead>
+<tbody id="satirlar"></tbody>
+</table>
+
+<p><label>Hatalı bulunan satırlar:<br><textarea placeholder="GTİP ve neyin yanlış olduğu"></textarea></label></p>
+<ul class="checklist">
+<li><input type="checkbox"><span>Geriye kalan 255 satır (yalnızca Uygunluk Beyanı + CE/etiket gerektirenler) için Madde 2'deki eşleme mantığı yeterli; satır satır kontrol gerekmiyor.</span></li>
+</ul>
+
+<h2>5. Muafiyetler (MADDE 7)</h2>
+<p>Ön kontrol bu muafiyetleri <b>bilmiyor</b>; muafiyet kapsamındaki bir sevkiyatta yine de “belge eksik” bulgusu üretebilir. Bu bulguyu müşavir kapatır. Her birinin doğru anlaşıldığını teyit edin:</p>
+<table>
+<thead><tr><th class="tick">✔</th><th>Muafiyet</th><th style="width:90px">Madde</th><th>Not / sorumuz</th></tr></thead>
+<tbody>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td>A.TR Dolaşım Belgeli beyanda TAREKS referansının doğrudan oluşması</td><td>7/1</td>
+    <td>Bulguyu bastırmamayı tercih ettik: 7/6 uyarınca risk analizi ürünü yine fiili denetime yönlendirebiliyor, 7/7 uyarınca Ek-2/A'da Ön İzin zorunlu kalıyor. <b>Bu yaklaşım doğru mu?</b>
+        <span class="yn"><label><input type="radio" name="s5-atr" value="Evet"> Evet</label><label><input type="radio" name="s5-atr" value="Hayır"> Hayır</label></span></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td>Üretim girdisi muafiyeti (Sanayi ve Teknoloji Bakanlığı yazısı)</td><td>7/2</td>
+    <td>Pratikte ne sıklıkta karşınıza çıkıyor? <input type="text" placeholder="sıklık"></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td>AQAP / GMP belgesi sahibi sanayicinin kendi ihtiyacı</td><td>7/3</td><td></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td>Geri gelen eşya / 4458 sayılı Kanun'un beşinci kısmı kapsamındaki eşya (sabit 23 haneli TAREKS referansı)</td><td>7/4, 7/5, 12/4, 12/5</td><td></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td><b>Kapsam dışı beyanı</b> — GTİP listede olsa da ürün yönetmelik kapsamına girmeyebilir</td><td>MADDE 8</td>
+    <td>Tam bu nedenle kapsam bildirimi yalnızca <b>bilgilendirmedir</b>; hiçbir zaman “uygunsuz” denmez. Doğru mu?
+        <span class="yn"><label><input type="radio" name="s5-kapsam" value="Evet"> Evet</label><label><input type="radio" name="s5-kapsam" value="Hayır"> Hayır</label></span></td></tr>
+</tbody>
+</table>
+
+<h2>6. Bilinen sınırlar — kabul ediyor musunuz?</h2>
+<table>
+<thead><tr><th class="tick">✔</th><th>Sınır</th><th>Sonucu</th></tr></thead>
+<tbody>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td><b>İçten yanmalı motor dipnotu</b> (Ek-2/A ve Ek-2/B tablolarının altındaki not): motor barındıran ürünlerde, GTİP karşısında yazmasa dahi 2016/1628/AB ve 2000/14/AT uygunluğu aranıyor. Bu bilgi hiçbir GTİP listesinden çıkarılamıyor.</td>
+    <td>Bu satırlarda Tip Onay / Gürültü Sertifikası <b>istenmeyecek</b> — yani hata, eksik uyarma yönünde olacak. Kabul ediyor musunuz?
+        <span class="yn"><label><input type="radio" name="s6-motor" value="Evet"> Evet</label><label><input type="radio" name="s6-motor" value="Hayır"> Hayır</label></span></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td><b>Kullanılmış veya yenileştirilmiş makina:</b> İthalat: 2026/9 tebliği kapsamında izin belgesi gerekiyor (GTİP o tebliğin Ek-1'inde ise <code>0970-TPS</code>, değilse <code>0962-TPS</code>; 8457 işleme merkezlerinin tamamı dahil birçok makina kodu Grup 1'de).</td>
+    <td>Dosyada “yeni / kullanılmış” bilgisi tutulmadığı için bu kontrol yapılmıyor → <b>S-3</b>.</td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td><b>Süreler kontrol edilmiyor:</b> belge yükleme 20 iş günü (MADDE 10/1), TAREKS referansı 1 yıl geçerli (MADDE 12/2), kullanılmış eşya izni 6 ay (2026/9 MADDE 9).</td><td></td></tr>
+<tr><td class="tick"><input type="checkbox"></td>
+    <td>Belgelerin <b>içeriği</b> denetlenmiyor; yalnızca varlığı ile birkaç tutarlılık noktası (belgedeki model ↔ faturadaki model, test raporunun tarihi, CE işareti ve ithalatçı bilgisi) kontrol ediliyor.</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>7. Cevap bekleyen beş soru</h2>
+<table>
+<thead><tr><th style="width:52px">No</th><th>Soru</th><th style="width:26%">Neden soruyoruz</th></tr></thead>
+<tbody>
+<tr><td><b>S-1</b></td>
+    <td>Bu 307 GTİP'ten pratikte hangileri karşınıza çıkıyor? İlk 20'yi sıralayabilir misiniz?<br><textarea placeholder="S-1 cevabınız"></textarea></td>
+    <td>Sahada işe yarayan satırları önce onaylayıp kalanını “doğrulanmadı” olarak işaretleyebiliriz.</td></tr>
+<tr><td><b>S-2</b></td>
+    <td>AB Uygunluk Beyanı'nın Türkçe tercümesinin veya Ticaret Müşavirliği onayının eksik olması gerçekte Ön İzni durduruyor mu?<br><textarea placeholder="S-2 cevabınız"></textarea></td>
+    <td>Durduruyorsa bunun ayrı bir kontrol olarak eklenmesi gerekiyor (“tercüme var mı”, “müşavirlik onaylı mı”).</td></tr>
+<tr><td><b>S-3</b></td>
+    <td>İthal edilen makinaların yaklaşık ne kadarı kullanılmış/yenileştirilmiş? 2026/9 izin belgesi de aynı ön kontrolde görülsün mü?<br><textarea placeholder="S-3 cevabınız"></textarea></td>
+    <td>“Yeni / kullanılmış” ayrımının eklenip eklenmeyeceğine karar verir.</td></tr>
+<tr><td><b>S-4</b></td>
+    <td>Uygunluk Beyanı / Tip Onay / Gürültü Sertifikası tedarikçiden geliyor — bunları dosyada ilk ne zaman görüyorsunuz?<br><textarea placeholder="S-4 cevabınız"></textarea></td>
+    <td>Eksik uygunluk beyanının <b>engel</b> mi, yoksa “tedarikçiyi sıkıştır” <b>uyarısı</b> mı sayılacağını belirler.</td></tr>
+<tr><td><b>S-5</b></td>
+    <td>AB 2023/1230 (yeni Makine Tüzüğü) için iç mevzuata alma taslağı veya geçiş takvimi duydunuz mu?<br><textarea placeholder="S-5 cevabınız"></textarea></td>
+    <td>2026 içinde mevzuat atıflarının değişmesi gerekebilir.</td></tr>
+</tbody>
+</table>
+
+<h2>8. Karar ve imza</h2>
+<ul class="checklist">
+<li><input type="radio" name="karar" value="Onaylıyorum"><span><b>Onaylıyorum</b> — türetme mantığı, dışarıda bırakılanlar ve örneklediğim satırlar doğru.</span></li>
+<li><input type="radio" name="karar" value="Şartlı onaylıyorum"><span><b>Şartlı onaylıyorum</b> — şu düzeltmelerden sonra:</span></li>
+</ul>
+<textarea placeholder="Şartlı onay — istenen düzeltmeler"></textarea>
+<ul class="checklist">
+<li><input type="radio" name="karar" value="Onaylamıyorum"><span><b>Onaylamıyorum</b> — gerekçe:</span></li>
+</ul>
+<textarea placeholder="Onaylamama gerekçesi"></textarea>
+
+<table class="imza">
+<tbody>
+<tr><td style="width:280px">Adı soyadı</td><td><input type="text" id="ad"></td></tr>
+<tr><td>Ünvan / gümrük müşavirliği izin belge no</td><td><input type="text"></td></tr>
+<tr><td>Tarih</td><td><input type="date" id="tarih"></td></tr>
+</tbody>
+</table>
+
+<p class="meta"><i>Bu inceleme tebliğin 2026 nüshası içindir. Tebliğ her yıl yeniden yayımlandığından, 2027 nüshası çıktığında tablo yeniden çıkarılır ve bu form tekrar imzaya sunulur.</i></p>
+
+</form>
+</main>
+
+<div class="bar">
+  <button type="button" id="kaydet">Cevapları dosyaya kaydet</button>
+  <button type="button" class="ikincil" id="temizle">Formu temizle</button>
+  <span class="durum" id="durum"></span>
+</div>
+
+<script>
+const SATIRLAR = [
+["8413.50.61.90.00","Ek-2/A","Diğerleri (Pistonlu Pompalar)","Makine, LVD, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8414.59.95.90.00","Ek-2/A","Diğer fanlar (Eksenel ve Santrifüjlü olmayan)","Makine, LVD, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8414.80.19.90.00","Ek-2/A","Diğerleri (Çok kademeli turbo kompresör)","Makine, LVD, EMC, Gürültü","Uyg. Beyanı + Gürültü + CE/Etiket + Fotoğraf"],
+["8414.80.22.90.11","Ek-2/A","Pistonlu kompresörler; hava tankı ihtiva eden, monometre basıncı =<15 bar, debisi =< 60 m3/h,","Makine, LVD, EMC, Gürültü","Uyg. Beyanı + Gürültü + CE/Etiket + Fotoğraf"],
+["8414.80.22.90.19","Ek-2/A","Pistonlu diğer kompresörler; monometre basıncı =<15 bar, debisi =<60 m3/h, sivil hava taşıtlarında kullanılanlar hariç (motorlu kara taşıtlarında kullanılanlar hariç)","Makine, Gürültü, EMC","Uyg. Beyanı + Gürültü + CE/Etiket + Fotoğraf"],
+["8414.80.73.90.00","Ek-2/A","Döner hareketli, tek şaftlı kompresörler; sivil hava taşıtlarında kullanılmaya mahsus olanlar hariç","Makine, Gürültü, EMC","Uyg. Beyanı + Gürültü + CE/Etiket + Fotoğraf"],
+["8414.80.75.90.00","Ek-2/A","Döner hareketli, çok şaftlı, vidalı kompresörler; sivil hava taşıtlarında kullanılmaya mahsus olanlar hariç","Makine, Gürültü, EMC","Uyg. Beyanı + Gürültü + CE/Etiket + Fotoğraf"],
+["8417.10.00.00.12","Ek-2/A","Metallerin, metal cevherlerinin ve piritleri için elektrikli olmayan ısıl işlem fırınları","Makine, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8419.39.00.00.00","Ek-2/A","Diğerleri (Kurutucular)","Makine, LVD, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8421.39.25.90.00","Ek-2/A","Diğerleri (Gazların filtre edilmesi veya arıtılmasına mahsus makina ve cihazlar) (Motorlu kara taşıtlarında kullanılanlar hariç)","Makine","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8422.30.00.00.00","Ek-2/A","Şişe, kutu, çuval, vb kapları doldurma, kapama, mühürleme, etiketleme, kapsülleme makinaları ve içecekleri gazlandırmaya mahsus makinalar","Makine, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8422.40.00.00.19","Ek-2/A","Diğer paketleme veya ambalajlama makinaları (ısı ile büzerek ambalajlamaya mahsus makinalar dahil)","Makine, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8443.32.10.10.11","Ek-2/A","Net baskı eni 180 cm'yi geçen veya en az dört baskı kafasına sahip olanlar","Makine, LVD, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8451.40.00.00.13","Ek-2/A","Tekstil sanayi için boyama makinaları","Makine","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8452.21.00.00.00","Ek-2/A","Diğer dikiş makineleri, otomatik üniteler (sanayi tipi otomatik üniteli dikiş makineleri)","Makine, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8452.29.00.00.19","Ek-2/A","Diğer dikiş makineleri, diğerleri (sanayi tipi otomatik olmayan)","Makine","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8456.11.90.00.00","Ek-2/A","Lazer ile maddelerin aşındırılarak işlenmesine mahsus diğer makina ve aletler","Makine, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8462.62.10.00.00","Ek-2/A","Soğuk metal işlemeye mahsus mekanik presler; nümerik kontrollü olanlar","Makine, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8477.10.00.00.00","Ek-2/A","Kauçuk veya plastik için enjeksiyon makinaları","Makine, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8477.20.00.00.00","Ek-2/A","Kauçuk veya plastik için ekstrüzyon makinaları","Makine, EMC","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8483.40.51.90.22","Ek-2/A","Sonsuz Vidalı Redüktörler; Sivil Hava Taşıtlarında Kullanılanlar Hariç","Makine","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8483.40.51.90.29","Ek-2/A","Dişli Kutuları; Sonsuz Vidalı Redüktörler ve Sivil Hava Taşıtlarında Kullanılanlar Hariç","Makine","Uyg. Beyanı + CE/Etiket + Fotoğraf"],
+["8414.40.10.00.00","Ek-2/B","Dakikada verdiği hava debisi 2 m³.ü geçmeyenler","Makine, Gürültü","Uyg. Beyanı + Gürültü + CE/Etiket"],
+["8414.40.90.00.11","Ek-2/B","Vidalı olanlar","Makine, Gürültü","Uyg. Beyanı + Gürültü + CE/Etiket"],
+["8414.40.90.00.12","Ek-2/B","Pistonlu olanlar","Makine, Gürültü","Uyg. Beyanı + Gürültü + CE/Etiket"],
+["8414.40.90.00.19","Ek-2/B","Diğerleri","Makine, Gürültü","Uyg. Beyanı + Gürültü + CE/Etiket"],
+["8424.49.10.00.00","Ek-2/B","Traktörler tarafından çekilmek veya bunlara monte edilmek üzere yapılmış pülvarizatörler ve toz dağıtıcılar","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8427.20.90.00.00","Ek-2/B","Diğerleri","Makine, Emisyon, Gürültü","Uyg. Beyanı + Tip Onay + Gürültü + CE/Etiket"],
+["8432.29.90.00.11","Ek-2/B","Gübreli çapa makinaları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8432.29.90.00.19","Ek-2/B","Diğer çapa makinaları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8432.39.90.00.11","Ek-2/B","Tek dane ekim Makinaları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8432.39.90.00.12","Ek-2/B","Yumru dikim makinaları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8432.39.90.00.13","Ek-2/B","Fide dikim makinaları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8432.39.90.00.14","Ek-2/B","Fidan dikim makinaları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8432.41.00.00.00","Ek-2/B","Hayvan gübresi dağıtıcıları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8432.42.00.00.00","Ek-2/B","Diğer gübre dağıtıcıları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8432.80.00.00.19","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.20.50.00.00","Ek-2/B","Bir traktörle taşınmak veya çekilmek üzere imal edilmiş olanlar","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.20.90.00.00","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.30.00.00.00","Ek-2/B","Ot hazırlama makina ve cihazları","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.40.00.00.00","Ek-2/B","Ot ve saman balyalama makina ve cihazları (ot ve samanları toplayıp demet veya balya yapmaya mahsus olanlar dahil)","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.51.00.00.19","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.51.00.00.29","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.52.00.00.18","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.53.10.00.19","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.53.30.00.19","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.53.90.00.18","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.53.90.00.19","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.59.19.00.00","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.59.85.00.19","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.59.85.00.29","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+["8433.59.85.00.39","Ek-2/B","Diğerleri","Makine, Tarım Makinaları","Uyg. Beyanı + Tip Onay + CE/Etiket"],
+];
+
+const form = document.getElementById('form');
+const durum = document.getElementById('durum');
+const KEY = 'makina-inceleme-formu-2026.32';
+
+// 52 kritik satır
+document.getElementById('satirlar').innerHTML = SATIRLAR.map(([gtip, liste, ad, yon, belge]) =>
+  `<tr><td class="tick"><input type="checkbox" data-satir="${gtip}"></td>` +
+  `<td class="gtip">${gtip}</td><td>${liste}</td><td>${ad}</td><td>${yon}</td><td>${belge}</td></tr>`
+).join('');
+
+// ponytail: alan adları DOM sırasına göre üretiliyor (f0, f1…). Form tek parça ve
+// sırası değişmiyor; satır eklenirse eski kayıtlar kayar — o zaman elle isim verilir.
+const alanlar = [...form.querySelectorAll('input, textarea')];
+alanlar.forEach((el, i) => { if (!el.name) el.name = 'f' + i; el.dataset.ix = i; });
+
+function soru(el) {
+  const satir = el.closest('tr');
+  if (satir) return [...satir.cells].map(c => c.innerText.trim()).filter(Boolean).join(' | ');
+  const kutu = el.closest('li, label, p');
+  return (kutu ? kutu.innerText : el.placeholder || '').trim();
+}
+
+function topla() {
+  return alanlar.map(el => ({
+    alan: el.dataset.ix,
+    soru: soru(el).replace(/\s+/g, ' ').slice(0, 400),
+    cevap: el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value
+  }));
+}
+
+function sayacGuncelle() {
+  const n = form.querySelectorAll('[data-satir]:checked').length;
+  const s = document.getElementById('sayac');
+  s.textContent = `${n} / 52`;
+  s.className = 'sayac ' + (n >= 10 ? 'ok' : 'az');
+}
+
+// Tarayıcıda otomatik saklama
+function sakla() {
+  try { localStorage.setItem(KEY, JSON.stringify(topla().map(x => x.cevap))); } catch (e) {}
+  durum.textContent = 'taslak tarayıcıya kaydedildi';
+}
+function geriYukle() {
+  let d; try { d = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+  if (!Array.isArray(d) || d.length !== alanlar.length) return;
+  alanlar.forEach((el, i) => {
+    if (el.type === 'checkbox' || el.type === 'radio') el.checked = !!d[i];
+    else el.value = d[i] || '';
+  });
+  durum.textContent = 'kaydedilmiş taslak yüklendi';
+}
+
+form.addEventListener('input', () => { sayacGuncelle(); sakla(); });
+form.addEventListener('change', () => { sayacGuncelle(); sakla(); });
+
+document.getElementById('kaydet').addEventListener('click', () => {
+  const ad = document.getElementById('ad').value.trim();
+  if (!ad) { alert('Lütfen Madde 8\'de adınızı yazın.'); document.getElementById('ad').focus(); return; }
+  const cikti = {
+    form: 'Makina İthalat Denetimi — Belge Eşleme Tablosu İnceleme Formu',
+    teblig: 'ÜGD 2026/32',
+    inceleyen: ad,
+    formTarihi: document.getElementById('tarih').value,
+    kaydedilme: new Date().toISOString(),
+    orneklenenSatir: [...form.querySelectorAll('[data-satir]:checked')].map(el => el.dataset.satir),
+    cevaplar: topla()
+  };
+  const dosya = 'makina-inceleme-' +
+    ad.toLowerCase().replace(/[^a-z0-9çğıöşü]+/gi, '-').replace(/^-|-$/g, '') +
+    '-' + new Date().toISOString().slice(0, 10) + '.json';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(cikti, null, 2)], { type: 'application/json' }));
+  a.download = dosya;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  durum.textContent = dosya + ' indirildi';
+});
+
+document.getElementById('temizle').addEventListener('click', () => {
+  if (!confirm('Tüm cevaplar silinecek. Emin misiniz?')) return;
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  form.reset();
+  sayacGuncelle();
+  durum.textContent = 'form temizlendi';
+});
+
+geriYukle();
+sayacGuncelle();
+if (!document.getElementById('tarih').value)
+  document.getElementById('tarih').value = new Date().toISOString().slice(0, 10);
+</script>
+</body>
+</html>

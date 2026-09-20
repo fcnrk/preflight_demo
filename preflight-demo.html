@@ -1,0 +1,951 @@
+<title>Preflight — Sevkiyat Ön-Kontrol</title>
+<meta name="description" content="An interactive demo: upload customs documents, watch the system extract fields, run them against a readable rule engine, and reach the verdict, findings and audit trail.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#eef1f4;--panel:#fff;--panel-2:#f6f8fa;--ink:#131922;--ink-soft:#48515e;--ink-faint:#79828f;
+    --line:#e2e6ec;--line-strong:#cfd5de;--brand:#0f7d8a;--brand-ink:#0b5b66;--brand-bg:#e2f1f2;
+    --topbar:#0e1822;--topbar-ink:#e9edf2;--topbar-faint:#8b95a3;
+    --block:#c93a3a;--block-bg:#fbe7e5;--block-line:#f0c3bf;--warn:#b3781a;--warn-bg:#fbf0d9;--warn-line:#eddcb2;
+    --ok:#1f9257;--ok-bg:#e2f2e8;--ok-line:#bfe2cd;
+    --shadow:0 1px 2px rgba(15,25,40,.05),0 6px 20px rgba(15,25,40,.05);--shadow-lift:0 2px 6px rgba(15,25,40,.08),0 14px 40px rgba(15,25,40,.08);
+    /* paper is always light — a scanned document */
+    --pp:#fdfdfb;--pp-ink:#1b2430;--pp-soft:#55606d;--pp-line:#d7dbe0;--pp-accent:#0f5b66;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0a0f16;--panel:#131a24;--panel-2:#0f151d;--ink:#e8ecf2;--ink-soft:#aab3c0;--ink-faint:#727c8a;
+    --line:#242d39;--line-strong:#333d4b;--brand:#2ab5c2;--brand-ink:#5fd0da;--brand-bg:#0e2a2e;
+    --topbar:#060b12;--topbar-ink:#e9edf2;--topbar-faint:#7b8593;
+    --block:#e8756c;--block-bg:#2e1614;--block-line:#4a221f;--warn:#e0ad55;--warn-bg:#2c2410;--warn-line:#463a1c;
+    --ok:#4cc584;--ok-bg:#112a1d;--ok-line:#1f4632;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);--shadow-lift:0 2px 8px rgba(0,0,0,.5),0 18px 44px rgba(0,0,0,.45);
+  }}
+  :root[data-theme="dark"]{
+    --bg:#0a0f16;--panel:#131a24;--panel-2:#0f151d;--ink:#e8ecf2;--ink-soft:#aab3c0;--ink-faint:#727c8a;
+    --line:#242d39;--line-strong:#333d4b;--brand:#2ab5c2;--brand-ink:#5fd0da;--brand-bg:#0e2a2e;
+    --topbar:#060b12;--topbar-ink:#e9edf2;--topbar-faint:#7b8593;
+    --block:#e8756c;--block-bg:#2e1614;--block-line:#4a221f;--warn:#e0ad55;--warn-bg:#2c2410;--warn-line:#463a1c;
+    --ok:#4cc584;--ok-bg:#112a1d;--ok-line:#1f4632;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);--shadow-lift:0 2px 8px rgba(0,0,0,.5),0 18px 44px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Manrope",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  button{font-family:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:20;background:var(--topbar);color:var(--topbar-ink);border-bottom:1px solid rgba(255,255,255,.08)}
+  .topbar-in{max-width:1180px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;letter-spacing:-.02em;color:#fff}
+  .brand .glyph{width:26px;height:26px;border-radius:7px;background:var(--brand);display:grid;place-items:center;color:#04262b;font-weight:800;font-size:15px}
+  .brand small{font-weight:500;color:var(--topbar-faint);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-left:2px}
+  .demopill{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--topbar-faint);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:3px 9px}
+  .spacer{flex:1}
+  .langtog{display:inline-flex;border:1px solid rgba(255,255,255,.18);border-radius:8px;overflow:hidden}
+  .langtog button{background:transparent;color:var(--topbar-faint);border:0;padding:7px 12px;font-size:12px;font-weight:700}
+  .langtog button[aria-pressed="true"]{background:var(--brand);color:#04262b}
+  select.ship{background:#182533;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:7px 28px 7px 11px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M3 4.5L6 8l3-3.5' stroke='%238b95a3' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 9px center}
+
+  /* stepper */
+  .stepper{max-width:1180px;margin:0 auto;padding:14px 20px 0;display:flex;gap:6px;flex-wrap:wrap}
+  .stepper .stp{display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:10px;border:1px solid var(--line);background:var(--panel);font-size:13px;font-weight:600;color:var(--ink-faint);box-shadow:var(--shadow)}
+  .stepper .stp .num{width:20px;height:20px;border-radius:50%;background:var(--panel-2);border:1px solid var(--line-strong);display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-size:11px}
+  .stepper .stp.done{color:var(--brand-ink);border-color:var(--brand-line,var(--brand))}
+  .stepper .stp.done .num{background:var(--brand);color:#04262b;border-color:var(--brand)}
+  .stepper .stp.active{color:var(--ink);border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),var(--shadow)}
+  .stepper .stp[disabled]{opacity:.5;cursor:not-allowed}
+  .stepper .sarrow{align-self:center;color:var(--ink-faint);font-family:"JetBrains Mono",monospace}
+
+  .stage{max-width:1180px;margin:0 auto;padding:20px}
+
+  /* upload */
+  .drop{border:2px dashed var(--line-strong);border-radius:16px;background:var(--panel);padding:34px 26px;text-align:center;box-shadow:var(--shadow)}
+  .drop h2{font-size:22px;margin:0 0 6px;letter-spacing:-.01em}
+  .drop p{color:var(--ink-soft);margin:0 auto;max-width:56ch;font-size:14.5px}
+  .drop .ic{width:52px;height:52px;border-radius:13px;background:var(--brand-bg);color:var(--brand-ink);display:grid;place-items:center;margin:0 auto 16px;font-size:24px}
+  .bundles{display:grid;gap:14px;margin-top:22px}
+  @media(min-width:760px){.bundles{grid-template-columns:repeat(3,1fr)}}
+  .bundle{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px;box-shadow:var(--shadow);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+  .bundle:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:var(--brand)}
+  .bundle .bh{font-weight:700;font-size:15px;margin-bottom:3px}
+  .bundle .br{font-size:12.5px;color:var(--ink-faint);margin-bottom:12px}
+  .bundle .chps{display:flex;flex-wrap:wrap;gap:5px}
+  .dchip{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;padding:3px 7px;border-radius:5px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink-soft)}
+  .bundle .go{margin-top:13px;font-size:12.5px;font-weight:700;color:var(--brand-ink);display:flex;gap:6px;align-items:center}
+  .srcline{margin-top:14px;font-size:12px;color:var(--ink-faint);display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .srcbadge{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
+  .srcbadge.email{color:var(--brand-ink);background:var(--brand-bg)}.srcbadge.whatsapp{color:var(--ok);background:var(--ok-bg)}.srcbadge.upload{color:var(--warn);background:var(--warn-bg)}
+
+  /* processing overlay */
+  .proc{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px;box-shadow:var(--shadow-lift);max-width:560px;margin:10px auto}
+  .proc h2{font-size:19px;margin:0 0 4px;text-align:center}
+  .proc .psub{text-align:center;color:var(--ink-faint);font-size:13px;margin:0 0 22px}
+  .pstep{display:flex;align-items:center;gap:12px;padding:9px 4px;font-size:14px;color:var(--ink-faint)}
+  .pstep .pd{width:20px;height:20px;border-radius:50%;border:2px solid var(--line-strong);flex:none;display:grid;place-items:center;font-size:11px;font-weight:800}
+  .pstep.on{color:var(--ink)}
+  .pstep.ok{color:var(--ink)}
+  .pstep.ok .pd{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .pstep.on .pd{border-color:var(--brand);border-top-color:transparent;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.pstep.on .pd{animation:none}}
+
+  .flowbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:22px;flex-wrap:wrap}
+  .btn{font-size:14px;font-weight:700;border-radius:10px;padding:11px 20px;border:1px solid var(--line-strong);background:var(--panel);color:var(--ink)}
+  .btn.primary{background:var(--brand);color:#04262b;border-color:var(--brand)}
+  .btn:hover{box-shadow:var(--shadow)}
+  .btn.ghost{background:transparent}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+
+  h2.sh{font-size:19px;margin:0 0 3px;letter-spacing:-.01em}
+  .ssub{color:var(--ink-soft);font-size:14px;margin:0 0 16px;max-width:74ch}
+
+  /* extraction split */
+  .exwrap{display:grid;gap:16px;grid-template-columns:1fr}
+  @media(min-width:900px){.exwrap{grid-template-columns:1.1fr .9fr}}
+  .docchips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .docchip{display:flex;gap:7px;align-items:center;padding:7px 12px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer}
+  .docchip[aria-pressed="true"]{border-color:var(--brand);color:var(--brand-ink);background:var(--brand-bg)}
+  .docchip .src{font-family:"JetBrains Mono",monospace;font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:4px}
+  .docchip .src.email{color:var(--brand-ink);background:var(--brand-bg)}.docchip .src.whatsapp{color:var(--ok);background:var(--ok-bg)}.docchip .src.upload{color:var(--warn);background:var(--warn-bg)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}
+  .panel-h{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .panel-h h3{margin:0;font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint)}
+  .panel-h .hh{font-size:11.5px;color:var(--ink-faint)}
+  .exfields{padding:6px 10px 12px}
+  .exf{display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px 8px;border-bottom:1px solid var(--line);align-items:start}
+  .exf:last-child{border-bottom:0}
+  .exf .fk{font-size:12px;color:var(--ink-faint)}
+  .exf .fk .pg{font-family:"JetBrains Mono",monospace;font-size:9.5px;color:var(--ink-faint);opacity:.7;margin-left:6px}
+  .exf .fv{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink);text-align:right;font-weight:500}
+  .exf .cf{font-family:"JetBrains Mono",monospace;font-size:10px;margin-top:3px;display:flex;gap:5px;align-items:center;justify-content:flex-end}
+  .cfbar{width:42px;height:4px;border-radius:3px;background:var(--line);overflow:hidden;display:inline-block}
+  .cfbar i{display:block;height:100%;background:var(--brand)}
+  .exf.low .fv{color:var(--warn)}
+  .exf.low .cfbar i{background:var(--warn)}
+
+  /* paper facsimile */
+  .paperwrap{background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:14px;box-shadow:var(--shadow);max-height:640px;overflow:auto}
+  .paper{background:var(--pp);color:var(--pp-ink);border:1px solid var(--pp-line);border-radius:4px;padding:22px 22px 26px;font-size:11.5px;line-height:1.45;box-shadow:0 4px 18px rgba(10,20,30,.14);max-width:560px;margin:0 auto}
+  .paper .pttl{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--pp-accent);padding-bottom:10px;margin-bottom:12px}
+  .paper .pttl .co{font-weight:800;font-size:14px;color:var(--pp-ink)}
+  .paper .pttl .co small{display:block;font-weight:500;color:var(--pp-soft);font-size:10px;margin-top:2px}
+  .paper .pttl .dt{text-align:right;font-weight:800;font-size:13px;color:var(--pp-accent);letter-spacing:.02em}
+  .paper .pttl .dt small{display:block;color:var(--pp-soft);font-weight:600;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase}
+  .paper .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+  .paper .blk .bl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--pp-soft);font-weight:700;margin-bottom:3px}
+  .paper .blk .bd{color:var(--pp-ink)}
+  .paper .blk .bd b{font-weight:700}
+  .paper .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 16px;margin-bottom:12px;padding:9px 0;border-top:1px solid var(--pp-line);border-bottom:1px solid var(--pp-line)}
+  .paper .meta .m{display:flex;justify-content:space-between;gap:10px}
+  .paper .meta .m .k{color:var(--pp-soft)}
+  .paper .meta .m .v{font-family:"JetBrains Mono",monospace;font-weight:600;text-align:right}
+  .paper table.li{width:100%;border-collapse:collapse;margin:4px 0 10px;font-size:10.5px}
+  .paper table.li th{text-align:left;background:#eef2f1;color:var(--pp-soft);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;padding:6px 7px;border-bottom:1px solid var(--pp-line)}
+  .paper table.li td{padding:6px 7px;border-bottom:1px solid var(--pp-line);vertical-align:top}
+  .paper table.li td.n{font-family:"JetBrains Mono",monospace;text-align:right;font-weight:600}
+  .paper .totrow{display:flex;justify-content:flex-end;gap:26px;padding:3px 7px;font-size:11px}
+  .paper .totrow.grand{font-weight:800;font-size:13px;color:var(--pp-accent);border-top:2px solid var(--pp-accent);margin-top:4px;padding-top:7px}
+  .paper .totrow .tv{font-family:"JetBrains Mono",monospace}
+  .paper .foot2{margin-top:14px;padding-top:9px;border-top:1px solid var(--pp-line);color:var(--pp-soft);font-size:9.5px;display:flex;justify-content:space-between;gap:12px}
+  .paper .sig{margin-top:16px;text-align:right}
+  .paper .sig .line{display:inline-block;border-top:1px solid var(--pp-ink);padding-top:3px;font-size:9.5px;color:var(--pp-soft);min-width:150px;text-align:center}
+  .paper .stamp{display:inline-block;border:1.5px solid var(--pp-accent);color:var(--pp-accent);border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;letter-spacing:.08em;transform:rotate(-4deg);text-transform:uppercase}
+  .paper .kv2{display:grid;grid-template-columns:1fr;gap:5px}
+  .paper .kv2 .r{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dotted var(--pp-line);padding:4px 0}
+  .paper .kv2 .r .k{color:var(--pp-soft)} .paper .kv2 .r .v{font-family:"JetBrains Mono",monospace;font-weight:600;text-align:right}
+  .paper .warnval{color:#a5382f;font-weight:800}
+
+  /* rules */
+  .rsummary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .rstat{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 16px;box-shadow:var(--shadow);min-width:96px}
+  .rstat .n{font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:600;line-height:1}
+  .rstat .l{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-top:5px;font-weight:600}
+  .rstat.b .n{color:var(--block)}.rstat.w .n{color:var(--warn)}.rstat.o .n{color:var(--ok)}
+  .rgroup{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin:18px 0 9px}
+  .rule{background:var(--panel);border:1px solid var(--line);border-left-width:4px;border-radius:11px;padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .rule.pass{border-left-color:var(--ok)}.rule.block{border-left-color:var(--block)}.rule.warn{border-left-color:var(--warn)}.rule.na{border-left-color:var(--line-strong);opacity:.62}
+  .rule .rtop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+  .rule .rid{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-faint);font-weight:600}
+  .rule .rres{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:800;letter-spacing:.05em;padding:4px 9px;border-radius:6px;white-space:nowrap;flex:none}
+  .rres.pass{color:var(--ok);background:var(--ok-bg)}.rres.block{color:var(--block);background:var(--block-bg)}.rres.warn{color:var(--warn);background:var(--warn-bg)}.rres.na{color:var(--ink-faint);background:var(--panel-2);border:1px solid var(--line)}
+  .rule .rst{font-size:13.5px;color:var(--ink);margin-top:7px;font-weight:500}
+  .rule .rev{margin-top:9px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .rule .rev .op{color:var(--ink-faint)}
+  .rule .rev .vv{color:var(--ink);font-weight:600}
+  .rule .rev .vv.bad{color:var(--block)}
+
+  /* results (verdict + tabs, reused) */
+  .verdict{display:grid;grid-template-columns:auto 1fr;border-radius:14px;overflow:hidden;background:var(--panel);box-shadow:var(--shadow-lift);border:1px solid var(--line);margin-bottom:16px}
+  .vstripe{width:8px}.verdict.s-block .vstripe{background:var(--block)}.verdict.s-warn .vstripe{background:var(--warn)}.verdict.s-ok .vstripe{background:var(--ok)}
+  .vbody{padding:20px 22px;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .vmain{flex:1 1 320px;min-width:240px}
+  .vstatus{display:flex;align-items:center;gap:11px}
+  .vdot{width:11px;height:11px;border-radius:50%}
+  .s-block .vdot{background:var(--block)}.s-warn .vdot{background:var(--warn)}.s-ok .vdot{background:var(--ok)}
+  .vstatus h1{margin:0;font-size:clamp(19px,3vw,25px);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .s-block .vstatus h1{color:var(--block)}.s-warn .vstatus h1{color:var(--warn)}.s-ok .vstatus h1{color:var(--ok)}
+  .vsub{color:var(--ink-soft);font-size:14px;margin:8px 0 0}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .chip{display:inline-flex;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:5px 10px;font-size:12px;color:var(--ink-soft)}
+  .chip b{color:var(--ink);font-weight:600}.chip .mono{font-size:12px}
+  .counts{display:flex;gap:10px;flex-wrap:wrap;align-self:center}
+  .count{min-width:74px;text-align:center;border-radius:11px;padding:11px 13px;border:1px solid var(--line);background:var(--panel-2)}
+  .count .n{font-family:"JetBrains Mono",monospace;font-size:24px;font-weight:600;line-height:1}
+  .count .l{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);margin-top:5px;font-weight:600}
+  .count.b .n{color:var(--block)}.count.w .n{color:var(--warn)}.count.o .n{color:var(--ok)}
+  .tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;margin-bottom:16px}
+  .tab{white-space:nowrap;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--ink-faint);padding:9px 14px;font-size:13.5px;font-weight:700}
+  .tab[aria-selected="true"]{color:var(--brand-ink);border-bottom-color:var(--brand)}
+  .finding{border:1px solid var(--line);border-left-width:4px;border-radius:11px;padding:14px 16px;margin-bottom:12px;background:var(--panel)}
+  .finding.block{border-left-color:var(--block)}.finding.warn{border-left-color:var(--warn)}.finding.ok{border-left-color:var(--ok);background:var(--panel-2)}
+  .finding.resolved{opacity:.55}
+  .fhead{display:flex;gap:12px;align-items:flex-start}
+  .sev{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:4px 8px;border-radius:6px;flex:none;margin-top:1px}
+  .sev.block{color:var(--block);background:var(--block-bg)}.sev.warn{color:var(--warn);background:var(--warn-bg)}.sev.ok{color:var(--ok);background:var(--ok-bg)}
+  .ftitle{flex:1;min-width:0}.ftitle .ft{font-weight:700;font-size:15px}.finding.resolved .ft{text-decoration:line-through}
+  .ftitle .fd{color:var(--ink-soft);font-size:13px;margin-top:4px}
+  .ftitle .rref{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-faint);margin-top:4px}
+  .compare{margin-top:11px;display:grid;gap:8px;grid-template-columns:1fr}
+  @media(min-width:520px){.compare{grid-template-columns:1fr 1fr}}
+  .cmp{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+  .cmp .cd{font-size:11px;color:var(--ink-faint);text-transform:uppercase;font-weight:600}
+  .cmp .cv{font-family:"JetBrains Mono",monospace;font-size:13.5px;font-weight:600;margin-top:3px}
+  .cmp.bad .cv{color:var(--block)}
+  .fmeta{display:flex;justify-content:flex-end;margin-top:11px}
+  .resolve{font-size:12.5px;font-weight:700;color:var(--brand-ink);background:var(--brand-bg);border:1px solid var(--brand);border-radius:8px;padding:6px 12px}
+  .resolve.done{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-line)}
+  .tk-note{background:var(--brand-bg);border:1px solid var(--brand);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--brand-ink)}
+  .tkitem{display:flex;gap:12px;align-items:flex-start;padding:12px 4px;border-bottom:1px solid var(--line)}.tkitem:last-child{border-bottom:0}
+  .tmark{width:22px;height:22px;border-radius:6px;flex:none;display:grid;place-items:center;font-weight:800;font-size:13px;margin-top:1px}
+  .tmark.ok{background:var(--ok-bg);color:var(--ok)}.tmark.warn{background:var(--warn-bg);color:var(--warn)}.tmark.block{background:var(--block-bg);color:var(--block)}
+  .tkitem .tl{font-weight:600;font-size:14px}.tkitem .tnote{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+  .report{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:18px 20px;font-size:13.5px}
+  .report h3{margin:0 0 4px;font-size:15px;font-weight:800}
+  .report .rmeta{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-faint);margin-bottom:14px}
+  .report .rsec{margin-top:14px}.report .rsec .rh{font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--ink-faint);margin-bottom:6px}
+  .report ul{margin:0;padding-left:18px}.report li{margin:4px 0;color:var(--ink-soft)}.report li b{color:var(--ink)}
+  .report .rfoot{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-faint)}
+  .reptools{display:flex;justify-content:flex-end;margin-top:12px}
+  .audit-intro{font-size:12.5px;color:var(--ink-faint);margin-bottom:6px;max-width:66ch}
+  .aud{display:flex;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line)}.aud:last-child{border-bottom:0}
+  .aud .arail{display:flex;flex-direction:column;align-items:center;flex:none;width:66px;gap:5px}
+  .actor{font-family:"JetBrains Mono",monospace;font-size:9.5px;font-weight:700;padding:3px 7px;border-radius:5px;text-align:center;width:100%}
+  .actor.ai{color:var(--brand-ink);background:var(--brand-bg)}.actor.user{color:var(--warn);background:var(--warn-bg)}.actor.rule{color:var(--ok);background:var(--ok-bg)}.actor.system{color:var(--ink-faint);background:var(--panel-2);border:1px solid var(--line)}
+  .aud .at{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-faint)}
+  .aud .abody{flex:1;min-width:0;padding-top:1px}.aud .aa{font-weight:600;font-size:13.5px;line-height:1.35}.aud .ad{font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .aud .ameta{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-faint);margin-top:5px;display:flex;gap:14px;flex-wrap:wrap}
+  .aud.live{background:var(--warn-bg);border-radius:8px;border-bottom:0;padding:10px 8px;margin:3px 0}
+  .foot{max-width:1180px;margin:8px auto 40px;padding:14px 20px;color:var(--ink-faint);font-size:12px}
+  @media (prefers-reduced-motion:no-preference){.finding,.aud,.rule,.bundle{transition:opacity .18s ease}}
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="glyph">P</span>Preflight <small id="brandsub">sevkiyat ön-kontrol</small></div>
+    <span class="demopill" id="demopill">Demo · örnek belgeler</span>
+    <span class="spacer"></span>
+    <select class="ship mono" id="shipsel" aria-label="bundle"></select>
+    <div class="langtog" role="group" aria-label="Language">
+      <button id="lang-tr" aria-pressed="true" onclick="setLang('tr')">TR</button>
+      <button id="lang-en" aria-pressed="false" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</div>
+<div class="stepper" id="stepper"></div>
+<div class="stage" id="view"></div>
+<div class="foot" id="foot"></div>
+
+<script>
+/* ================= i18n ================= */
+const T={
+ tr:{brandsub:"sevkiyat ön-kontrol",demopill:"Demo · örnek belgeler",
+   st1:"Yükle",st2:"Çıkarım",st3:"Kurallar",st4:"Sonuç",
+   upTitle:"Sevkiyat belgelerini yükleyin",upDesc:"E-posta, WhatsApp veya web ile gelen fatura, çeki listesi, konşimento ve diğer belgeleri bırakın. Bu demoda hazır bir örnek dosya paketi seçerek akışı simüle edin.",
+   chooseBundle:"örnek paketi işle",docsWord:"belge",arrivedVia:"geliş",
+   procTitle:"Belgeler işleniyor",procSub:"Sınıflandırma · OCR · alan çıkarımı · normalize · kural motoru",
+   next:"İleri",back:"Geri",reprocess:"Yeniden işle",toResults:"Sonuca git",
+   exTitle:"Çıkarılan alanlar",exDesc:"Her belge sınıflandırıldı ve alanlar kaynağıyla (sayfa) ve güven skoruyla çıkarıldı. Düşük güvenli alanlar sarı — insan onayına gelir.",
+   sourceDoc:"Kaynak belge",extracted:"Çıkarım",fieldsN:"alan",page:"s.",confidence:"güven",lowConf:"düşük güven",
+   rulesTitle:"Kural motoru",rulesDesc:"Çıkarılan alanlar okunabilir, deterministik kurallara sokuldu. Karar modelde değil; burada — her kural test edilebilir ve gösterilebilir.",
+   evaluated:"kural",passed:"geçti",issues:"sorun",naWord:"uygulanmaz",
+   grpCross:"Çapraz belge kontrolleri",grpTareks:"TAREKS hazırlık kuralları",
+   rPass:"GEÇTİ",rBlock:"ENGELLEYİCİ",rWarn:"UYARI",rNa:"UYGULANMAZ",inputsW:"girdiler",
+   notready:"GÜMRÜĞE HAZIR DEĞİL",readynotes:"HAZIR — NOTLAR VAR",ready:"GÜMRÜĞE HAZIR",
+   tareksNotReady:"TAREKS BAŞVURUSUNA HAZIR DEĞİL",tareksReady:"TAREKS BAŞVURUSUNA HAZIR",
+   subBlock:"Sevkiyat öncesi çözülmesi gereken engelleyici uyuşmazlıklar var.",subWarn:"Engelleyici sorun yok; kontrol edilmesi önerilen noktalar var.",subOk:"Belgeler tutarlı. Bilinen bir engelleyici uyuşmazlık yok.",
+   route:"Güzergâh",mode:"Taşıma",incoterm:"Teslim",gtip:"GTİP",value:"Değer",arrived:"Alındı",
+   cBlock:"Engelleyici",cWarn:"Uyarı",cOk:"Geçen",
+   tabCross:"Bulgular",tabTareks:"TAREKS",tabAudit:"Denetim İzi",tabReport:"Rapor",
+   ruleRef:"kural",confidenceW:"güven",markResolved:"İncelendi işaretle",resolvedW:"İncelendi ✓",
+   reportTitle:"Ön-Kontrol Raporu",generated:"Oluşturuldu",blocking:"Engelleyici sorunlar",warnings:"Kontrol edilecekler",passedW:"Doğrulanan kontroller",none:"—",
+   reportFoot:"AI destekli ön-kontrol. Beyan ve nihai sorumluluk yükümlü/müşavirdedir; insan onayı gereklidir.",copy:"Raporu kopyala",copied:"Kopyalandı ✓",
+   auditIntro:"Kullanıcı işlemleri ve kullanıcı adına yapılan AI işlemleri — belgelerin gelişinden karara kadar, kronolojik ve değiştirilemez.",
+   actorAI:"AI",actorUser:"KULLANICI",actorRule:"KURAL",actorSystem:"SİSTEM",model:"model",
+   chEmail:"E-POSTA",chWhatsapp:"WHATSAPP",chUpload:"YÜKLEME",
+   footnote:"Örnek belgelerle çalışan tanıtım demosu. Kural motoru tarayıcıda gerçekten çalışır; belge çıkarımı simüledir. Gerçek sevkiyat dosyası değildir."},
+ en:{brandsub:"shipment pre-check",demopill:"Demo · sample documents",
+   st1:"Upload",st2:"Extract",st3:"Rules",st4:"Results",
+   upTitle:"Upload the shipment documents",upDesc:"Drop the invoice, packing list, bill of lading and other documents arriving by email, WhatsApp or web. In this demo, pick a ready-made sample bundle to simulate the flow.",
+   chooseBundle:"process sample bundle",docsWord:"documents",arrivedVia:"arrival",
+   procTitle:"Processing documents",procSub:"Classify · OCR · field extraction · normalize · rule engine",
+   next:"Next",back:"Back",reprocess:"Re-process",toResults:"Go to results",
+   exTitle:"Extracted fields",exDesc:"Each document was classified and its fields extracted with a source (page) and a confidence score. Low-confidence fields are amber — they surface for human review.",
+   sourceDoc:"Source document",extracted:"Extraction",fieldsN:"fields",page:"p.",confidence:"confidence",lowConf:"low confidence",
+   rulesTitle:"Rule engine",rulesDesc:"The extracted fields were run through a readable, deterministic rule set. The decision isn't in a model — it's here, where every rule is testable and inspectable.",
+   evaluated:"rules",passed:"passed",issues:"issues",naWord:"n/a",
+   grpCross:"Cross-document checks",grpTareks:"TAREKS readiness rules",
+   rPass:"PASS",rBlock:"BLOCKING",rWarn:"WARNING",rNa:"N/A",inputsW:"inputs",
+   notready:"NOT READY FOR CUSTOMS",readynotes:"READY — WITH NOTES",ready:"READY FOR CUSTOMS",
+   tareksNotReady:"NOT READY FOR TAREKS FILING",tareksReady:"READY FOR TAREKS FILING",
+   subBlock:"Blocking discrepancies must be resolved before the shipment clears.",subWarn:"No blocking issues; some points are worth reviewing.",subOk:"Documents are consistent. No known blocking discrepancy.",
+   route:"Route",mode:"Mode",incoterm:"Incoterm",gtip:"HS/GTİP",value:"Value",arrived:"Arrived",
+   cBlock:"Blocking",cWarn:"Warning",cOk:"Passed",
+   tabCross:"Findings",tabTareks:"TAREKS",tabAudit:"Audit Trail",tabReport:"Report",
+   ruleRef:"rule",confidenceW:"confidence",markResolved:"Mark reviewed",resolvedW:"Reviewed ✓",
+   reportTitle:"Pre-Check Report",generated:"Generated",blocking:"Blocking issues",warnings:"To review",passedW:"Verified checks",none:"—",
+   reportFoot:"AI-assisted pre-check. The declaration and final responsibility rest with the importer/broker; human confirmation is required.",copy:"Copy report",copied:"Copied ✓",
+   auditIntro:"User actions and AI operations performed on the user's behalf — from document arrival to verdict, chronological and tamper-evident.",
+   actorAI:"AI",actorUser:"USER",actorRule:"RULE",actorSystem:"SYSTEM",model:"model",
+   chEmail:"EMAIL",chWhatsapp:"WHATSAPP",chUpload:"UPLOAD",
+   footnote:"Demonstration on sample documents. The rule engine truly runs in your browser; document extraction is simulated. Not a real shipment file."}
+};
+const DOCLABELS={
+ invoice:{tr:"Ticari Fatura",en:"Commercial Invoice"},packing:{tr:"Çeki Listesi",en:"Packing List"},
+ bl:{tr:"Konşimento (B/L)",en:"Bill of Lading"},insurance:{tr:"Sigorta Poliçesi",en:"Insurance Policy"},
+ atr:{tr:"A.TR Belgesi",en:"A.TR Certificate"},doc:{tr:"Uygunluk Beyanı",en:"Decl. of Conformity"},
+ test:{tr:"Test Raporu",en:"Test Report"},coo:{tr:"Menşe Şahadetnamesi",en:"Certificate of Origin"}
+};
+
+/* ================= sample data ================= */
+function F(key,ltr,len,value,num,conf,page,extra){return Object.assign({key,label:{tr:ltr,en:len},value,conf,page:page||1},num!=null?{num}:{},extra||{});}
+
+const SHIPMENTS=[
+{
+ id:"TR-EXP-2291",type:"export",
+ label:{tr:"TR-EXP-2291 · Makine ihracatı → Almanya",en:"TR-EXP-2291 · Machinery export → Germany"},
+ route:"İstanbul (Ambarlı) → Hamburg",mode:{tr:"Deniz · 1×40'HC",en:"Sea · 1×40'HC"},incoterm:"CIF Hamburg",gtip:"8422.30.00.00",value:"EUR 84.600,00",
+ docs:[
+  {type:"invoice",source:"email",extracted:[
+    F("invoiceNo","Fatura No","Invoice No","INV-2026-0912",null,0.99),
+    F("date","Tarih","Date","2026-09-02",null,0.98),
+    F("po","Sipariş (PO)","Purchase Order","NORD-PO-4471",null,0.96),
+    F("seller","Satıcı","Seller","Anadolu Makine San. ve Tic. A.Ş.",null,0.97),
+    F("consignee","Alıcı","Consignee","Nordpack GmbH",null,0.98),
+    F("incoterm","Teslim şekli","Incoterm","CIF Hamburg",null,0.97),
+    F("currency","Para birimi","Currency","EUR",null,0.99),
+    F("hs","GTİP","HS/GTİP","8422.30",null,0.94,1,{hsConfirm:true}),
+    F("qty","Toplam adet","Total qty","320 adet",320,0.95),
+    F("packages","Palet","Pallets","8",8,0.98),
+    F("total","Genel toplam","Grand total","84.600,00",84600,0.96),
+    F("pol","Yükleme limanı","Port of loading","Ambarlı (TRAMB)",null,0.93),
+    F("pod","Boşaltma limanı","Port of discharge","Hamburg (DEHAM)",null,0.93),
+    F("container","Konteyner","Container","MSKU 448210-3",null,0.9,2)
+  ],paper:{invoice:{
+    no:"INV-2026-0912",date:"2026-09-02",proforma:"PF-2026-0788",po:"NORD-PO-4471",
+    seller:{name:"Anadolu Makine San. ve Tic. A.Ş.",addr:"İkitelli OSB, Başakşehir / İstanbul, Türkiye",id:"VKN 1234567890"},
+    buyer:{name:"Nordpack GmbH",addr:"Hafenstraße 12, 20457 Hamburg, Germany",id:"VAT DE811234567 · EORI DE4711008"},
+    incoterm:"CIF Hamburg (Incoterms 2020)",payment:{tr:"%30 peşin, %70 vesaik karşılığı",en:"30% advance, 70% against documents"},currency:"EUR",
+    pol:"Ambarlı, İstanbul (TRAMB)",pod:"Hamburg (DEHAM)",mode:{tr:"Denizyolu / FCL",en:"Sea / FCL"},vessel:"MV NORDIC 22E",container:"MSKU 448210-3",
+    lines:[
+     {desc:{tr:"Dolum kafası modülü (PET hattı)",en:"Filling head module (PET line)"},hs:"8422.30",qty:120,unit:"adet",price:380.00,amount:45600.00},
+     {desc:{tr:"Kapatma valfi seti",en:"Sealing valve set"},hs:"8422.30",qty:200,unit:"adet",price:195.00,amount:39000.00}
+    ],
+    qtyTotal:320,packages:8,subtotal:84600.00,total:84600.00,gross:"12.800 kg",net:"11.720 kg",
+    bank:{name:"Türkiye Garanti Bankası",iban:"TR12 0006 4000 0011 2345 6789 01",swift:"TGBATRISXXX"},
+    marks:"NORDPACK / HAMBURG / 1-8"
+  }}},
+  {type:"packing",source:"email",extracted:[
+    F("qty","Toplam adet","Total qty","316 adet",316,0.94),
+    F("packages","Palet","Pallets","8",8,0.97),
+    F("grossWeight","Brüt ağırlık","Gross weight","12.450 kg",12450,0.95),
+    F("netWeight","Net ağırlık","Net weight","11.720 kg",11720,0.95),
+    F("container","Konteyner","Container","—",null,0.6,1,{missing:true})
+  ],paper:{packing:{
+    no:"PL-2026-0912",date:"2026-09-02",seller:"Anadolu Makine San. ve Tic. A.Ş.",buyer:"Nordpack GmbH",
+    rows:[
+     {plt:"1-4",desc:{tr:"Dolum kafası modülü",en:"Filling head module"},qty:120,gross:5100,net:4820},
+     {plt:"5-8",desc:{tr:"Kapatma valfi seti",en:"Sealing valve set"},qty:196,gross:7350,net:6900}
+    ],
+    qtyTotal:316,packages:8,gross:"12.450 kg",net:"11.720 kg",container:"—",marks:"NORDPACK / HAMBURG / 1-8"
+  }}},
+  {type:"bl",source:"whatsapp",extracted:[
+    F("blNo","Konşimento No","B/L No","MAEU-HAM-77120",null,0.9),
+    F("consignee","Alıcı","Consignee","Nordpack GmbH",null,0.89),
+    F("grossWeight","Brüt ağırlık","Gross weight","12.800 kg",12800,0.88),
+    F("container","Konteyner","Container","MSKU 448210-3",null,0.9),
+    F("pol","Yükleme","POL","Ambarlı",null,0.87),
+    F("freight","Navlun","Freight","PREPAID",null,0.92)
+  ],paper:{bl:{
+    no:"MAEU-HAM-77120",shipper:"Anadolu Makine San. ve Tic. A.Ş.",consignee:"Nordpack GmbH",notify:"Nordpack GmbH",
+    vessel:"MV NORDIC 22E / V.0912",pol:"Ambarlı, İstanbul",pod:"Hamburg",container:"MSKU 448210-3 / 40'HC",
+    packages:"8 pallets",gross:"12.800 kg",freight:"PREPAID",date:"2026-09-03",
+    note:{tr:"Telefonla çekilmiş görüntü — düşük çözünürlük",en:"Phone-captured image — low resolution"}
+  }}},
+  {type:"insurance",source:"upload",extracted:[
+    F("policyNo","Poliçe No","Policy No","MRN-2026-55841",null,0.96),
+    F("insuredValue","Sigorta bedeli","Insured value","84.600,00",84600,0.95),
+    F("currency","Para birimi","Currency","EUR",null,0.98),
+    F("coverage","Teminat","Coverage","Institute Cargo Clauses (A)",null,0.9)
+  ],paper:{generic:{title:{tr:"SİGORTA POLİÇESİ",en:"INSURANCE POLICY"},co:"Anadolu Sigorta A.Ş.",
+    rows:[["Poliçe No / Policy No","MRN-2026-55841"],["Sigortalı / Insured","Anadolu Makine A.Ş."],
+      ["Teminat / Coverage","Institute Cargo Clauses (A)"],["Sefer / Voyage","Ambarlı → Hamburg"],
+      ["Sigorta bedeli / Sum insured","EUR 84.600,00"]],
+    warnRow:4,stamp:{tr:"POLİÇE",en:"POLICY"}}}},
+  {type:"atr",source:"email",extracted:[
+    F("atrNo","Belge No","Cert No","A.TR 0099231",null,0.95),
+    F("origin","Menşe","Origin","Türkiye",null,0.97),
+    F("present","Durum","Status","Onaylı / Endorsed","present",0.96)
+  ],paper:{generic:{title:{tr:"A.TR DOLAŞIM BELGESİ",en:"A.TR MOVEMENT CERTIFICATE"},co:"T.C. Ticaret Bakanlığı",
+    rows:[["Belge No / Cert No","A.TR 0099231"],["İhracatçı / Exporter","Anadolu Makine A.Ş."],
+      ["Alıcı / Consignee","Nordpack GmbH"],["Menşe / Origin","Türkiye"]],
+    stamp:{tr:"ONAYLANDI",en:"ENDORSED"}}}}
+ ],
+ tareks:null
+},
+{
+ id:"TR-IMP-0473",type:"import",
+ label:{tr:"TR-IMP-0473 · Elektrikli ekipman ithalatı ← Çin",en:"TR-IMP-0473 · Electrical equipment import ← China"},
+ route:"Shenzhen → İzmir (Alsancak)",mode:{tr:"Deniz · LCL",en:"Sea · LCL"},incoterm:"FOB Shenzhen",gtip:"8536.50.19.00.00",value:"USD 31.240,00",
+ docs:[
+  {type:"invoice",source:"email",extracted:[
+    F("invoiceNo","Fatura No","Invoice No","SV-88190",null,0.98),
+    F("seller","Satıcı","Seller","Shenzhen Volt Co., Ltd.",null,0.96),
+    F("consignee","Alıcı","Consignee","Ege Elektrik Ltd.",null,0.97),
+    F("model","Model","Model","SW-220A",null,0.95),
+    F("qty","Adet","Qty","5.000 adet",5000,0.96),
+    F("hs","GTİP","HS/GTİP","8536.50.19",null,0.94),
+    F("incoterm","Teslim","Incoterm","FOB Shenzhen",null,0.96),
+    F("currency","Para","Currency","USD",null,0.98),
+    F("total","Toplam","Total","31.240,00",31240,0.96)
+  ],paper:{invoice:{
+    no:"SV-88190",date:"2026-08-20",proforma:"PI-SV-771",po:"EGE-2026-330",
+    seller:{name:"Shenzhen Volt Co., Ltd.",addr:"Bao'an District, Shenzhen, China",id:"—"},
+    buyer:{name:"Ege Elektrik Ltd.",addr:"Alsancak, İzmir, Türkiye",id:"VKN 9988776655"},
+    incoterm:"FOB Shenzhen (Incoterms 2020)",payment:{tr:"T/T peşin",en:"T/T advance"},currency:"USD",
+    pol:"Shenzhen (CNSZX)",pod:"İzmir (TRIZM)",mode:{tr:"Denizyolu / LCL",en:"Sea / LCL"},vessel:"COSCO 118W",container:"CBHU 771902-5",
+    lines:[{desc:{tr:"Anahtarlama modülü SW-220A",en:"Switching module SW-220A"},hs:"8536.50.19",qty:5000,unit:"adet",price:6.248,amount:31240.00}],
+    qtyTotal:5000,packages:40,subtotal:31240.00,total:31240.00,gross:"1.850 kg",net:"1.600 kg",
+    bank:{name:"Bank of China",iban:"—",swift:"BKCHCNBJ"},marks:"EGE / IZMIR"
+  }}},
+  {type:"doc",source:"email",extracted:[
+    F("model","Model","Model","SW-220",null,0.93),
+    F("directive","Direktif","Directive","LVD 2014/35/EU",null,0.95),
+    F("manufacturer","Üretici","Manufacturer","Shenzhen Volt Co., Ltd.",null,0.94)
+  ],paper:{generic:{title:{tr:"AT UYGUNLUK BEYANI",en:"DECLARATION OF CONFORMITY"},co:"Shenzhen Volt Co., Ltd.",
+    rows:[["Model","SW-220"],["Direktif / Directive","LVD 2014/35/EU"],["Standart / Standard","EN 60947"],["Üretici / Manufacturer","Shenzhen Volt Co., Ltd."]],
+    warnRow:0,stamp:{tr:"BEYAN",en:"DECLARATION"}}}},
+  {type:"test",source:"email",extracted:[
+    F("year","Rapor yılı","Report year","2021",2021,0.92),
+    F("standard","Standart","Standard","EN 60947 (eski sürüm)",null,0.9),
+    F("lab","Laboratuvar","Lab","SZ-TEST Labs",null,0.93)
+  ],paper:{generic:{title:{tr:"TEST RAPORU (LVD/EMC)",en:"TEST REPORT (LVD/EMC)"},co:"SZ-TEST Laboratories",
+    rows:[["Tarih / Date","2021-03"],["Standart / Standard","EN 60947 (2019)"],["Model","SW-220"],["Sonuç / Result","PASS"]],
+    warnRow:0,warnRow2:1,stamp:{tr:"2021",en:"2021"}}}},
+  {type:"packing",source:"email",extracted:[
+    F("qty","Adet","Qty","5.000 adet",5000,0.96),
+    F("packages","Koli","Cartons","40",40,0.97)
+  ],paper:{packing:{no:"PL-SV-88190",date:"2026-08-20",seller:"Shenzhen Volt Co.",buyer:"Ege Elektrik Ltd.",
+    rows:[{plt:"1-40",desc:{tr:"Anahtarlama modülü",en:"Switching module"},qty:5000,gross:1850,net:1600}],
+    qtyTotal:5000,packages:40,gross:"1.850 kg",net:"1.600 kg",container:"CBHU 771902-5",marks:"EGE / IZMIR"}}},
+  {type:"bl",source:"upload",extracted:[
+    F("blNo","Konşimento No","B/L No","COSU-IZM-4410",null,0.95),
+    F("consignee","Alıcı","Consignee","Ege Elektrik Ltd.",null,0.95),
+    F("container","Konteyner","Container","CBHU 771902-5",null,0.94)
+  ],paper:{bl:{no:"COSU-IZM-4410",shipper:"Shenzhen Volt Co.",consignee:"Ege Elektrik Ltd.",notify:"Ege Elektrik Ltd.",
+    vessel:"COSCO 118W",pol:"Shenzhen",pod:"İzmir",container:"CBHU 771902-5",packages:"40 cartons",gross:"1.850 kg",freight:"COLLECT",date:"2026-08-22"}}}
+ ],
+ tareks:{group:{tr:"Elektrikli ekipman (Alçak Gerilim / LVD)",en:"Electrical equipment (Low Voltage / LVD)"},
+   teblig:{tr:"2026 Ürün Güvenliği ve Denetimi Tebliği kapsamında",en:"In scope of the 2026 Product Safety & Inspection communiqué"}}
+},
+{
+ id:"TR-EXP-2318",type:"export",
+ label:{tr:"TR-EXP-2318 · Tekstil ihracatı → İngiltere",en:"TR-EXP-2318 · Textile export → United Kingdom"},
+ route:"İzmir → Felixstowe",mode:{tr:"Deniz · 1×20'DC",en:"Sea · 1×20'DC"},incoterm:"FOB İzmir",gtip:"6109.10.00.00",value:"USD 42.900,00",
+ docs:[
+  {type:"invoice",source:"upload",extracted:[
+    F("invoiceNo","Fatura No","Invoice No","INV-2026-2318",null,0.98),
+    F("consignee","Alıcı","Consignee","Harborough Retail Ltd.",null,0.97),
+    F("incoterm","Teslim","Incoterm","FOB İzmir",null,0.97),
+    F("currency","Para","Currency","USD",null,0.99),
+    F("hs","GTİP","HS/GTİP","6109.10",null,0.95),
+    F("qty","Adet","Qty","18.000 adet",18000,0.97),
+    F("total","Toplam","Total","42.900,00",42900,0.97)
+  ],paper:{invoice:{no:"INV-2026-2318",date:"2026-09-01",proforma:"PF-2318",po:"HRB-2026-91",
+    seller:{name:"Ege Tekstil A.Ş.",addr:"Çiğli OSB, İzmir, Türkiye",id:"VKN 5544332211"},
+    buyer:{name:"Harborough Retail Ltd.",addr:"Leicester, United Kingdom",id:"EORI GB1234567"},
+    incoterm:"FOB İzmir (Incoterms 2020)",payment:{tr:"60 gün vadeli",en:"60 days net"},currency:"USD",
+    pol:"İzmir (TRIZM)",pod:"Felixstowe (GBFXT)",mode:{tr:"Denizyolu",en:"Sea"},vessel:"MSC LARA",container:"TGHU 559034-1",
+    lines:[{desc:{tr:"Pamuklu t-shirt",en:"Cotton t-shirt"},hs:"6109.10",qty:18000,unit:"adet",price:2.383,amount:42900.00}],
+    qtyTotal:18000,packages:120,subtotal:42900.00,total:42900.00,gross:"4.180 kg",net:"3.960 kg",
+    bank:{name:"İş Bankası",iban:"TR33 0006 4000 0011 9988 7766 01",swift:"ISBKTRIS"},marks:"HRB / FELIXSTOWE"}}},
+  {type:"packing",source:"upload",extracted:[
+    F("qty","Adet","Qty","18.000 adet",18000,0.97),
+    F("grossWeight","Brüt ağırlık","Gross weight","4.180 kg",4180,0.96),
+    F("container","Konteyner","Container","TGHU 559034-1",null,0.95)
+  ],paper:{packing:{no:"PL-2318",date:"2026-09-01",seller:"Ege Tekstil A.Ş.",buyer:"Harborough Retail Ltd.",
+    rows:[{plt:"1-120",desc:{tr:"Pamuklu t-shirt",en:"Cotton t-shirt"},qty:18000,gross:4180,net:3960}],
+    qtyTotal:18000,packages:120,gross:"4.180 kg",net:"3.960 kg",container:"TGHU 559034-1",marks:"HRB / FELIXSTOWE"}}},
+  {type:"bl",source:"upload",extracted:[
+    F("blNo","Konşimento No","B/L No","MSCU-FXT-2210",null,0.96),
+    F("consignee","Alıcı","Consignee","Harborough Retail Ltd.",null,0.96),
+    F("grossWeight","Brüt ağırlık","Gross weight","4.180 kg",4180,0.95),
+    F("container","Konteyner","Container","TGHU 559034-1",null,0.96)
+  ],paper:{bl:{no:"MSCU-FXT-2210",shipper:"Ege Tekstil A.Ş.",consignee:"Harborough Retail Ltd.",notify:"Harborough Retail Ltd.",
+    vessel:"MSC LARA",pol:"İzmir",pod:"Felixstowe",container:"TGHU 559034-1",packages:"120 cartons",gross:"4.180 kg",freight:"PREPAID",date:"2026-09-02"}}},
+  {type:"coo",source:"upload",extracted:[
+    F("origin","Menşe","Origin","Türkiye",null,0.97),
+    F("present","Durum","Status","Onaylı / Endorsed","present",0.96)
+  ],paper:{generic:{title:{tr:"MENŞE ŞAHADETNAMESİ",en:"CERTIFICATE OF ORIGIN"},co:"İzmir Ticaret Odası",
+    rows:[["Menşe / Origin","Türkiye"],["İhracatçı / Exporter","Ege Tekstil A.Ş."],["Alıcı / Consignee","Harborough Retail Ltd."]],
+    stamp:{tr:"ONAYLANDI",en:"ENDORSED"}}}}
+ ],
+ tareks:null
+}
+];
+
+const INTAKE={
+ "TR-EXP-2291":{events:[
+   {channel:"email",from:"ops@anadolumakine.com",to:"sevkiyat-2291@in.preflight.app",ts:"10:42",note:{tr:"3 ek: Fatura, Çeki Listesi, A.TR",en:"3 attachments: Invoice, Packing List, A.TR"}},
+   {channel:"whatsapp",from:"+90 5•• ••• · Anadolu Makine",ts:"11:07",note:{tr:"Konşimento fotoğrafı (telefon çekimi)",en:"Bill of Lading photo (phone capture)"}},
+   {channel:"upload",from:{tr:"Operatör (web)",en:"Operator (web)"},ts:"11:20",note:{tr:"Sigorta poliçesi PDF",en:"Insurance policy PDF"}}
+ ]},
+ "TR-IMP-0473":{events:[
+   {channel:"email",from:"import@egeelektrik.com",to:"sevkiyat-0473@in.preflight.app",ts:"09:15",note:{tr:"4 ek: Fatura, Çeki, Uygunluk Beyanı, Test Raporu",en:"4 attachments: Invoice, Packing, DoC, Test Report"}},
+   {channel:"upload",from:{tr:"Operatör (web)",en:"Operator (web)"},ts:"09:31",note:{tr:"Konşimento PDF",en:"Bill of Lading PDF"}}
+ ]},
+ "TR-EXP-2318":{events:[
+   {channel:"upload",from:{tr:"Operatör (web) · toplu yükleme",en:"Operator (web) · bulk upload"},ts:"14:03",note:{tr:"4 belge yüklendi",en:"4 documents uploaded"}}
+ ]}
+};
+
+/* ================= rule engine ================= */
+function docOf(s,t){return s.docs.find(d=>d.type===t);}
+function fieldOf(s,t,k){const d=docOf(s,t);if(!d)return null;return (d.extracted||[]).find(f=>f.key===k)||null;}
+function N(s,t,k){const f=fieldOf(s,t,k);return f&&f.num!=null?f.num:null;}
+function V(s,t,k){const f=fieldOf(s,t,k);return f?f.value:null;}
+function fmt(n){return new Intl.NumberFormat(state.lang==="tr"?"tr-TR":"en-US",{minimumFractionDigits:2,maximumFractionDigits:2}).format(n);}
+function tw(o){return o?(o[state.lang]||o.tr):"";}
+
+const RULES=[
+ {id:"CHK.WEIGHT.PL_BL",scope:"cross",sev:"block",short:{tr:"Brüt ağırlık uyuşmuyor",en:"Gross weight mismatch"},
+  statement:{tr:"Çeki listesi brüt ağırlığı, konşimento brüt ağırlığına eşit olmalı (tolerans: max 5 kg / %0,5).",en:"Packing-list gross weight must equal B/L gross weight (tolerance: max 5 kg / 0.5%)."},
+  inputs:[["packing","grossWeight"],["bl","grossWeight"]],
+  eval:s=>{const a=N(s,"packing","grossWeight"),b=N(s,"bl","grossWeight");if(a==null||b==null)return{applies:false};const tol=Math.max(5,0.005*Math.max(a,b));return{applies:true,pass:Math.abs(a-b)<=tol,vals:[a+" kg",b+" kg"],bad:[true,true]};}},
+ {id:"CHK.QTY.INV_PL",scope:"cross",sev:"block",short:{tr:"Adet uyuşmuyor (Fatura ≠ Çeki Listesi)",en:"Quantity mismatch (Invoice ≠ Packing List)"},
+  statement:{tr:"Fatura toplam adedi, çeki listesi adedine eşit olmalı.",en:"Invoice total quantity must equal packing-list quantity."},
+  inputs:[["invoice","qty"],["packing","qty"]],
+  eval:s=>{const a=N(s,"invoice","qty"),b=N(s,"packing","qty");if(a==null||b==null)return{applies:false};return{applies:true,pass:a===b,vals:[a+" adet",b+" adet"],bad:[true,true]};}},
+ {id:"CHK.SUM.INV",scope:"cross",sev:"block",short:{tr:"Fatura toplamı kalem toplamıyla tutuyor",en:"Invoice total reconciles with line items"},
+  statement:{tr:"Fatura kalem tutarları toplamı, genel toplama eşit olmalı.",en:"Invoice line-item amounts must sum to the stated total."},
+  inputs:[["invoice","total"]],
+  eval:s=>{const d=docOf(s,"invoice"),p=d&&d.paper&&d.paper.invoice;if(!p)return{applies:false};const sum=p.lines.reduce((a,l)=>a+l.amount,0);return{applies:true,pass:Math.abs(sum-p.total)<0.01,vals:[fmt(sum),fmt(p.total)]};}},
+ {id:"CHK.CONSIGNEE.MATCH",scope:"cross",sev:"block",short:{tr:"Alıcı bilgisi tutarlı",en:"Consignee consistent"},
+  statement:{tr:"Alıcı (consignee) fatura ve konşimentoda aynı olmalı.",en:"Consignee must match on invoice and B/L."},
+  inputs:[["invoice","consignee"],["bl","consignee"]],
+  eval:s=>{const a=V(s,"invoice","consignee"),b=V(s,"bl","consignee");if(!a||!b)return{applies:false};const n=x=>x.toLowerCase().replace(/[^a-z0-9]/g,"");return{applies:true,pass:n(a)===n(b),vals:[a,b]};}},
+ {id:"CHK.INCOTERM.CIF_INS",scope:"cross",sev:"block",short:{tr:"CIF teslimde sigorta yetersiz",en:"Insufficient insurance for CIF"},
+  statement:{tr:"CIF teslimde sigorta bedeli, fatura CIF değerinin en az %110'u olmalı.",en:"Under CIF, insured value must be at least 110% of the invoice CIF value."},
+  inputs:[["invoice","total"],["insurance","insuredValue"]],
+  eval:s=>{const inc=(V(s,"invoice","incoterm")||"");if(!/^CIF/i.test(inc))return{applies:false};const t=N(s,"invoice","total"),ins=N(s,"insurance","insuredValue");if(t==null)return{applies:false};const need=t*1.1;return{applies:true,pass:ins!=null&&ins>=need-0.5,vals:[fmt(need),ins!=null?fmt(ins):"—"],bad:[false,true],lbls:[{tr:"gerekli (%110)",en:"required (110%)"},{tr:"poliçe",en:"policy"}]};}},
+ {id:"CHK.HS.DESC",scope:"cross",sev:"warn",short:{tr:"GTİP alt kırılımı teyit gerektiriyor",en:"HS sub-heading needs confirmation"},
+  statement:{tr:"GTİP kodu mevcut olmalı ve ürün açıklamasıyla alt kırılım düzeyinde tutarlı olmalı.",en:"HS code must be present and consistent with the description at sub-heading level."},
+  inputs:[["invoice","hs"]],
+  eval:s=>{const f=fieldOf(s,"invoice","hs");if(!f)return{applies:false};if(!f.hsConfirm)return{applies:true,pass:true,vals:[f.value]};return{applies:true,pass:false,vals:[f.value+" — alt kırılım / sub-heading ?"]};}},
+ {id:"CHK.CONTAINER.CONSISTENT",scope:"cross",sev:"warn",short:{tr:"Konteyner no. tutarsız/eksik",en:"Container number inconsistent/missing"},
+  statement:{tr:"Konteyner numarası konşimento ve çeki listesinde tutarlı olmalı.",en:"Container number should be consistent on B/L and packing list."},
+  inputs:[["bl","container"],["packing","container"]],
+  eval:s=>{const b=V(s,"bl","container"),p=V(s,"packing","container");if(!b)return{applies:false};const miss=(!p||p==="—");if(miss)return{applies:true,pass:false,vals:[b,"—"],bad:[false,true]};return{applies:true,pass:b.replace(/\s/g,"")===p.replace(/\s/g,""),vals:[b,p]};}},
+ {id:"CHK.ORIGIN.DOC",scope:"cross",sev:"warn",short:{tr:"Menşe/dolaşım belgesi",en:"Origin/movement document"},
+  statement:{tr:"Hedef ülke için gerekli menşe/dolaşım belgesi (A.TR / EUR.1 / menşe) bulunmalı.",en:"Required origin/movement document (A.TR / EUR.1 / Cert. of Origin) must be present."},
+  inputs:[],
+  eval:s=>{if(s.type!=="export")return{applies:false};const has=s.docs.some(d=>d.type==="atr"||d.type==="coo");return{applies:true,pass:has,vals:[has?(state.lang==="tr"?"mevcut":"present"):"—"]};}},
+ {id:"CHK.SHIPDATE.LC",scope:"cross",sev:"block",short:{tr:"L/C yükleme tarihi",en:"L/C shipment date"},
+  statement:{tr:"Akreditifli işlemde yükleme tarihi, L/C son yükleme tarihini geçmemeli.",en:"Under an L/C, the shipment date must not exceed the latest shipment date."},
+  inputs:[],
+  eval:s=>{const lc=s.docs.some(d=>d.type==="lc");if(!lc)return{applies:false};return{applies:true,pass:true,vals:["—"]};}},
+ /* TAREKS */
+ {id:"TRK.SCOPE",scope:"tareks",sev:"ok",short:{tr:"GTİP TAREKS kapsamı",en:"GTİP TAREKS scope"},
+  statement:{tr:"GTİP, ürün güvenliği (ÜGD) tebliği kapsamında mı? (bilgi bankası sorgusu)",en:"Is the GTİP within a product-safety (ÜGD) communiqué? (knowledge-base lookup)"},
+  inputs:[],
+  eval:s=>{if(s.type!=="import"||!s.tareks)return{applies:false};return{applies:true,pass:true,vals:[s.gtip+" — "+(state.lang==="tr"?"kapsamda":"in scope")]};}},
+ {id:"TRK.DOC.MODEL",scope:"tareks",sev:"block",short:{tr:"Uygunluk Beyanı model eşleşmesi",en:"DoC model match"},
+  statement:{tr:"AT Uygunluk Beyanı modeli, fatura modeliyle eşleşmeli.",en:"Declaration-of-Conformity model must match the invoice model."},
+  inputs:[["doc","model"],["invoice","model"]],
+  eval:s=>{const a=V(s,"doc","model"),b=V(s,"invoice","model");if(!a||!b)return{applies:false};return{applies:true,pass:a===b,vals:[a,b],bad:[true,true]};}},
+ {id:"TRK.TEST.AGE",scope:"tareks",sev:"warn",short:{tr:"Test raporu güncelliği",en:"Test report validity"},
+  statement:{tr:"Test raporu makul tarihli ve güncel standarda göre olmalı.",en:"Test report must be reasonably recent and reference the current standard."},
+  inputs:[["test","year"]],
+  eval:s=>{const y=N(s,"test","year");if(y==null)return{applies:false};return{applies:true,pass:y>=2024,vals:[String(y)+(state.lang==="tr"?" / eski standart":" / older standard")],bad:[true]};}},
+ {id:"TRK.CE.LABEL",scope:"tareks",sev:"ok",short:{tr:"CE işareti ve etiket",en:"CE marking & label"},
+  statement:{tr:"CE işareti ve Türkçe etiket (ithalatçı bilgileri) bulunmalı.",en:"CE marking and Turkish label (importer details) must be present."},
+  inputs:[],
+  eval:s=>{if(s.type!=="import")return{applies:false};return{applies:true,pass:true,vals:["CE ✓ · etiket ✓"]};}}
+];
+
+function runRules(s){return RULES.map(r=>({rule:r,res:r.eval(s)}));}
+
+/* ================= state ================= */
+let state={lang:"tr",shipId:SHIPMENTS[0].id,stage:"upload",resultsTab:"cross",
+  reached:{},resolved:{},results:{},exDoc:{},processing:false};
+SHIPMENTS.forEach(s=>{state.reached[s.id]=0;state.resolved[s.id]=new Set();state.exDoc[s.id]=0;});
+const L=()=>T[state.lang];
+const cur=()=>SHIPMENTS.find(s=>s.id===state.shipId);
+const STAGES=["upload","extract","rules","results"];
+const chLabel=(c,l)=>c==="email"?l.chEmail:c==="whatsapp"?l.chWhatsapp:l.chUpload;
+function hms(base,add){const p=base.split(":").map(Number);let x=p[0]*3600+p[1]*60+(p[2]||0)+add;x=((x%86400)+86400)%86400;const h=Math.floor(x/3600),m=Math.floor(x%3600/60),s=x%60;return[h,m,s].map(v=>String(v).padStart(2,"0")).join(":");}
+function nowTime(){return new Date().toTimeString().slice(0,8);}
+
+/* ================= process (build audit) ================= */
+function process(){
+ const s=cur();
+ const results=runRules(s);
+ const ing=INTAKE[s.id];
+ const audit=[];
+ ing.events.forEach(e=>audit.push({ts:e.ts+":00",actor:"system",
+   action:{tr:"Belge alındı — "+chLabel(e.channel,T.tr),en:"Document received — "+chLabel(e.channel,T.en)},
+   detail:{tr:(typeof e.from==="string"?e.from:e.from.tr)+" · "+e.note.tr,en:(typeof e.from==="string"?e.from:e.from.en)+" · "+e.note.en}}));
+ const base=ing.events[ing.events.length-1].ts;let t=4;
+ s.docs.forEach(d=>{const minc=Math.min.apply(null,d.extracted.map(f=>f.conf));
+   audit.push({ts:hms(base,t),actor:"ai",action:{tr:"Belge sınıflandırıldı → "+DOCLABELS[d.type].tr,en:"Document classified → "+DOCLABELS[d.type].en},model:"doc-classify@2.1",conf:Math.round((0.9+0.09*Math.random())*100)});t+=2;});
+ s.docs.forEach(d=>{const minc=Math.round(Math.min.apply(null,d.extracted.map(f=>f.conf))*100);const src=d.source==="whatsapp"?(state.lang,"OCR (foto)"):"OCR";
+   audit.push({ts:hms(base,t),actor:"ai",action:{tr:(d.source==="whatsapp"?"OCR (telefon çekimi) + çıkarım: ":"OCR + alan çıkarımı: ")+DOCLABELS[d.type].tr+" ("+d.extracted.length+" alan)",en:(d.source==="whatsapp"?"OCR (phone photo) + extraction: ":"OCR + field extraction: ")+DOCLABELS[d.type].en+" ("+d.extracted.length+" fields)"},model:"gw-extract@1.4",conf:minc});t+=2;});
+ // normalization highlights
+ s.docs.forEach(d=>d.extracted.forEach(f=>{if(f.num!=null&&typeof f.value==="string"&&/\d\.\d{3}/.test(f.value)){
+   audit.push({ts:hms(base,t),actor:"ai",action:{tr:"Normalize: '"+f.value+"' → "+f.num+" ("+DOCLABELS[d.type].tr+", TR sayı formatı)",en:"Normalize: '"+f.value+"' → "+f.num+" ("+DOCLABELS[d.type].en+", TR number format)"},model:"normalize@1.0",conf:99});t+=1;}}));
+ results.filter(x=>x.res.applies!==false).forEach(x=>{const pass=x.res.pass;const sev=pass?"PASS":x.rule.sev.toUpperCase();
+   const vals=(x.res.vals||[]).join(" vs ");
+   audit.push({ts:hms(base,t),actor:"rule",action:{tr:"Kural: "+x.rule.short.tr+" → "+(pass?"GEÇTİ":x.rule.sev==="block"?"ENGELLEYİCİ":"UYARI"),en:"Rule: "+x.rule.short.en+" → "+(pass?"PASS":x.rule.sev==="block"?"BLOCKING":"WARNING")},detail:vals?{tr:vals,en:vals}:null,ruleId:x.rule.id});t+=1;});
+ const nf=s.docs.reduce((a,d)=>a+d.extracted.length,0);
+ audit.push({ts:hms(base,t),actor:"ai",action:{tr:"Güven skorları hesaplandı ("+nf+" alan)",en:"Confidence scores computed ("+nf+" fields)"},model:"confidence@1.1",conf:93});
+ state.results[s.id]={ruleResults:results,audit:audit};
+ state.reached[s.id]=3;
+}
+
+/* ================= findings / verdict ================= */
+function findings(s){
+ const rr=state.results[s.id].ruleResults;
+ return rr.filter(x=>x.res.applies!==false).map(x=>({id:x.rule.id,scope:x.rule.scope,sev:x.res.pass?"ok":x.rule.sev,rule:x.rule,res:x.res}));
+}
+function counts(s){const r=state.resolved[s.id];let b=0,w=0,o=0;findings(s).forEach(f=>{if(r.has(f.id))return;if(f.sev==="block")b++;else if(f.sev==="warn")w++;else o++;});return{block:b,warn:w,ok:o};}
+function statusKey(s){const c=counts(s);if(s.type==="import"&&s.tareks)return c.block>0?"tareksNotReady":c.warn>0?"readynotes":"tareksReady";return c.block>0?"notready":c.warn>0?"readynotes":"ready";}
+function statusCls(k){return(k==="notready"||k==="tareksNotReady")?"s-block":k==="readynotes"?"s-warn":"s-ok";}
+
+/* ================= render ================= */
+function render(){
+ const s=cur(),l=L();
+ document.getElementById("brandsub").textContent=l.brandsub;
+ document.getElementById("demopill").textContent=l.demopill;
+ document.getElementById("foot").innerHTML='<span class="mono" style="letter-spacing:.06em;text-transform:uppercase;font-size:10.5px">Preflight</span> · '+l.footnote;
+ const sel=document.getElementById("shipsel");
+ sel.innerHTML=SHIPMENTS.map(x=>`<option value="${x.id}"${x.id===s.id?" selected":""}>${tw(x.label)}</option>`).join("");
+ renderStepper(s,l);
+ const v=document.getElementById("view");
+ if(state.processing){v.innerHTML=renderProc(s,l);return;}
+ if(state.stage==="upload")v.innerHTML=renderUpload(s,l);
+ else if(state.stage==="extract")v.innerHTML=renderExtract(s,l);
+ else if(state.stage==="rules")v.innerHTML=renderRules(s,l);
+ else v.innerHTML=renderResults(s,l);
+}
+
+function renderStepper(s,l){
+ const reached=state.reached[s.id];
+ const names=[l.st1,l.st2,l.st3,l.st4];
+ document.getElementById("stepper").innerHTML=STAGES.map((st,i)=>{
+   const active=state.stage===st&&!state.processing;
+   const done=i<=reached;
+   const cls=active?"stp active":done?"stp done":"stp";
+   const dis=i>reached;
+   return `<button class="${cls}"${dis?" disabled":""} onclick="goStage('${st}')"><span class="num">${i+1}</span>${names[i]}</button>`+(i<3?'<span class="sarrow">→</span>':'');
+ }).join("");
+}
+
+function renderUpload(s,l){
+ const bundles=SHIPMENTS.map(x=>{
+   const chans=[...new Set(INTAKE[x.id].events.map(e=>e.channel))];
+   const chips=x.docs.map(d=>`<span class="dchip">${tw(DOCLABELS[d.type])}</span>`).join("");
+   const srcs=chans.map(c=>`<span class="srcbadge ${c}">${chLabel(c,l)}</span>`).join(" ");
+   return `<div class="bundle" onclick="chooseBundle('${x.id}')">
+     <div class="bh">${tw(x.label).replace(/^[A-Z0-9-]+ · /,"")}</div>
+     <div class="br mono">${x.id} · ${x.docs.length} ${l.docsWord}</div>
+     <div class="chps">${chips}</div>
+     <div class="srcline" style="justify-content:flex-start">${l.arrivedVia}: ${srcs}</div>
+     <div class="go">${l.chooseBundle} →</div></div>`;
+ }).join("");
+ return `<div class="drop">
+   <div class="ic">⤓</div>
+   <h2>${l.upTitle}</h2><p>${l.upDesc}</p>
+ </div>
+ <div class="bundles">${bundles}</div>`;
+}
+
+function renderProc(s,l){
+ const steps=[l.st1==="Yükle"?"Alındı":"Received","Classify","OCR","Extract","Normalize","Rules"];
+ const trSteps=["Alındı","Sınıflandır","OCR","Çıkar","Normalize","Kurallar"];
+ const names=state.lang==="tr"?trSteps:["Received","Classify","OCR","Extract","Normalize","Rules"];
+ const k=state.procStep||0;
+ const rows=names.map((n,i)=>{const cls=i<k?"pstep ok":i===k?"pstep on":"pstep";const mk=i<k?"✓":i===k?"":(i+1);return `<div class="${cls}"><span class="pd">${mk}</span>${n}</div>`;}).join("");
+ return `<div class="proc"><h2>${l.procTitle}</h2><p class="psub">${l.procSub}</p>${rows}</div>`;
+}
+
+function renderExtract(s,l){
+ const chips=s.docs.map((d,i)=>`<button class="docchip" aria-pressed="${state.exDoc[s.id]===i}" onclick="setExDoc(${i})">${tw(DOCLABELS[d.type])}<span class="src ${d.source}">${chLabel(d.source,l)}</span></button>`).join("");
+ const d=s.docs[state.exDoc[s.id]];
+ const fields=d.extracted.map(f=>{
+   const low=f.conf<0.9;const pct=Math.round(f.conf*100);
+   return `<div class="exf${low?' low':''}"><div class="fk">${tw(f.label)}<span class="pg">${l.page}${f.page}</span></div>
+     <div><div class="fv">${f.value}</div><div class="cf">${pct}%<span class="cfbar"><i style="width:${pct}%"></i></span></div></div></div>`;
+ }).join("");
+ return `<h2 class="sh">${l.exTitle}</h2><p class="ssub">${l.exDesc}</p>
+   <div class="docchips">${chips}</div>
+   <div class="exwrap">
+     <div class="paperwrap">${renderPaper(d,l)}</div>
+     <div class="panel"><div class="panel-h"><h3>${l.extracted}</h3><span class="hh">${d.extracted.length} ${l.fieldsN}</span></div>
+       <div class="exfields">${fields}</div></div>
+   </div>
+   <div class="flowbar"><button class="btn ghost" onclick="goStage('upload')">${l.back}</button>
+     <button class="btn primary" onclick="goStage('rules')">${l.next} →</button></div>`;
+}
+
+/* ---- paper facsimiles ---- */
+function renderPaper(d,l){
+ const p=d.paper;
+ if(p.invoice)return paperInvoice(p.invoice,l);
+ if(p.packing)return paperPacking(p.packing,l);
+ if(p.bl)return paperBL(p.bl,l);
+ if(p.generic)return paperGeneric(p.generic,l);
+ return "";
+}
+function paperInvoice(v,l){
+ const lines=v.lines.map(li=>`<tr><td>${tw(li.desc)}</td><td class="mono">${li.hs}</td><td class="n">${li.qty}</td><td>${li.unit}</td><td class="n">${fmt(li.price)}</td><td class="n">${fmt(li.amount)}</td></tr>`).join("");
+ return `<div class="paper">
+   <div class="pttl"><div class="co">${v.seller.name}<small>${v.seller.addr}<br>${v.seller.id}</small></div>
+     <div class="dt">${state.lang==="tr"?"TİCARİ FATURA":"COMMERCIAL INVOICE"}<small>${v.no}</small><small style="letter-spacing:0;text-transform:none;color:var(--pp-soft)">${v.date}</small></div></div>
+   <div class="grid2">
+     <div class="blk"><div class="bl">${state.lang==="tr"?"Alıcı / Consignee":"Consignee"}</div><div class="bd"><b>${v.buyer.name}</b><br>${v.buyer.addr}<br>${v.buyer.id}</div></div>
+     <div class="blk"><div class="bl">${state.lang==="tr"?"Referanslar":"References"}</div><div class="bd">PO: ${v.po}<br>Proforma: ${v.proforma}<br>${tw(v.mode)}</div></div>
+   </div>
+   <div class="meta">
+     <div class="m"><span class="k">Incoterm</span><span class="v">${v.incoterm}</span></div>
+     <div class="m"><span class="k">${state.lang==="tr"?"Ödeme":"Payment"}</span><span class="v" style="font-family:inherit;font-weight:600">${tw(v.payment)}</span></div>
+     <div class="m"><span class="k">POL → POD</span><span class="v">${v.pol.split(",")[0]} → ${v.pod.split(" ")[0]}</span></div>
+     <div class="m"><span class="k">${state.lang==="tr"?"Gemi / Kont.":"Vessel / Cont."}</span><span class="v">${v.container}</span></div>
+   </div>
+   <table class="li"><thead><tr><th>${state.lang==="tr"?"Açıklama":"Description"}</th><th>GTİP</th><th style="text-align:right">${state.lang==="tr"?"Adet":"Qty"}</th><th>${state.lang==="tr"?"Br.":"Unit"}</th><th style="text-align:right">${state.lang==="tr"?"B.Fiyat":"Unit px"}</th><th style="text-align:right">${state.lang==="tr"?"Tutar":"Amount"}</th></tr></thead><tbody>${lines}</tbody></table>
+   <div class="totrow"><span>${state.lang==="tr"?"Ara toplam":"Subtotal"}</span><span class="tv">${v.currency} ${fmt(v.subtotal)}</span></div>
+   <div class="totrow" style="color:var(--pp-soft)"><span>${state.lang==="tr"?"Toplam adet / palet":"Total qty / pallets"}</span><span class="tv">${v.qtyTotal} / ${v.packages}</span></div>
+   <div class="totrow grand"><span>${state.lang==="tr"?"GENEL TOPLAM":"GRAND TOTAL"}</span><span class="tv">${v.currency} ${fmt(v.total)}</span></div>
+   <div class="foot2"><div>IBAN ${v.bank.iban}<br>SWIFT ${v.bank.swift} · ${v.bank.name}</div><div class="sig"><span class="line">${state.lang==="tr"?"Yetkili İmza":"Authorized Signature"}</span></div></div>
+ </div>`;
+}
+function paperPacking(v,l){
+ const rows=v.rows.map(r=>`<tr><td class="mono">${r.plt}</td><td>${tw(r.desc)}</td><td class="n">${r.qty}</td><td class="n">${fmt(r.gross)}</td><td class="n">${fmt(r.net)}</td></tr>`).join("");
+ return `<div class="paper">
+   <div class="pttl"><div class="co">${v.seller}<small>${state.lang==="tr"?"Çeki Listesi":"Packing List"}</small></div>
+     <div class="dt">${state.lang==="tr"?"ÇEKİ LİSTESİ":"PACKING LIST"}<small>${v.no}</small><small style="letter-spacing:0;text-transform:none;color:var(--pp-soft)">${v.date}</small></div></div>
+   <div class="grid2"><div class="blk"><div class="bl">${state.lang==="tr"?"Alıcı":"Consignee"}</div><div class="bd"><b>${v.buyer}</b></div></div>
+     <div class="blk"><div class="bl">${state.lang==="tr"?"Markalar":"Marks"}</div><div class="bd">${v.marks}<br>${state.lang==="tr"?"Konteyner":"Container"}: <b class="${v.container==='—'?'warnval':''}">${v.container}</b></div></div></div>
+   <table class="li"><thead><tr><th>${state.lang==="tr"?"Palet":"Pallet"}</th><th>${state.lang==="tr"?"Açıklama":"Description"}</th><th style="text-align:right">${state.lang==="tr"?"Adet":"Qty"}</th><th style="text-align:right">${state.lang==="tr"?"Brüt kg":"Gross kg"}</th><th style="text-align:right">${state.lang==="tr"?"Net kg":"Net kg"}</th></tr></thead><tbody>${rows}</tbody></table>
+   <div class="totrow grand"><span>${state.lang==="tr"?"TOPLAM":"TOTAL"}</span><span class="tv">${v.qtyTotal} ${state.lang==="tr"?"adet":"pcs"} · ${v.gross}</span></div>
+   <div class="foot2"><div>${state.lang==="tr"?"Net":"Net"}: ${v.net} · ${state.lang==="tr"?"Palet":"Pallets"}: ${v.packages}</div><div class="sig"><span class="line">${state.lang==="tr"?"İmza":"Signature"}</span></div></div>
+ </div>`;
+}
+function paperBL(v,l){
+ return `<div class="paper">
+   <div class="pttl"><div class="co">BILL OF LADING<small>${state.lang==="tr"?"Konşimento":"Ocean B/L"}</small></div>
+     <div class="dt">B/L<small>${v.no}</small><small style="letter-spacing:0;text-transform:none;color:var(--pp-soft)">${v.date}</small></div></div>
+   ${v.note?`<div style="background:#fbf0d9;border:1px solid #eddcb2;border-radius:5px;padding:6px 9px;font-size:9.5px;color:#8a6a1a;margin-bottom:10px">⚠ ${tw(v.note)}</div>`:""}
+   <div class="grid2">
+     <div class="blk"><div class="bl">Shipper</div><div class="bd">${v.shipper}</div></div>
+     <div class="blk"><div class="bl">Consignee</div><div class="bd"><b>${v.consignee}</b></div></div>
+     <div class="blk"><div class="bl">Notify</div><div class="bd">${v.notify}</div></div>
+     <div class="blk"><div class="bl">Vessel / Voyage</div><div class="bd">${v.vessel}</div></div>
+   </div>
+   <div class="kv2">
+     <div class="r"><span class="k">POL → POD</span><span class="v">${v.pol} → ${v.pod}</span></div>
+     <div class="r"><span class="k">Container</span><span class="v">${v.container}</span></div>
+     <div class="r"><span class="k">Packages</span><span class="v">${v.packages}</span></div>
+     <div class="r"><span class="k">Gross weight</span><span class="v">${v.gross}</span></div>
+     <div class="r"><span class="k">Freight</span><span class="v">${v.freight}</span></div>
+   </div>
+ </div>`;
+}
+function paperGeneric(v,l){
+ const rows=v.rows.map((r,i)=>`<div class="r"><span class="k">${r[0]}</span><span class="v ${(i===v.warnRow||i===v.warnRow2)?'warnval':''}">${r[1]}</span></div>`).join("");
+ return `<div class="paper">
+   <div class="pttl"><div class="co">${v.co}</div><div class="dt" style="font-size:11px">${tw(v.title)}</div></div>
+   <div class="kv2">${rows}</div>
+   ${v.stamp?`<div style="text-align:right;margin-top:14px"><span class="stamp">${tw(v.stamp)}</span></div>`:""}
+ </div>`;
+}
+
+/* ---- rules view ---- */
+function renderRules(s,l){
+ const rr=runRules(s);
+ let b=0,w=0,o=0,na=0;
+ rr.forEach(x=>{if(x.res.applies===false){na++;return;}if(x.res.pass)o++;else if(x.rule.sev==="block")b++;else w++;});
+ const card=x=>{
+   const na2=x.res.applies===false;
+   const pass=x.res.pass;
+   const cls=na2?"na":pass?"pass":x.rule.sev;
+   const rlbl=na2?l.rNa:pass?l.rPass:x.rule.sev==="block"?l.rBlock:l.rWarn;
+   let ev="";
+   if(na2){ev=`<div class="rev"><span class="op">${l.naWord} — applies_when</span></div>`;}
+   else{
+     const inp=(x.rule.inputs||[]);
+     const vals=x.res.vals||[];
+     let parts=[];
+     if(inp.length&&vals.length){
+       inp.forEach((ip,i)=>{const dl=DOCLABELS[ip[0]]?tw(DOCLABELS[ip[0]]):ip[0];const bad=x.res.bad&&x.res.bad[i];parts.push(`<span>${dl}: <span class="vv${bad?' bad':''}">${vals[i]!=null?vals[i]:'—'}</span></span>`);});
+     }else{vals.forEach(vv=>parts.push(`<span class="vv">${vv}</span>`));}
+     const op=pass?"✓":x.rule.sev==="block"?"✗":"!";
+     ev=`<div class="rev"><span class="op">${op}</span>${parts.join('<span class="op">·</span>')}</div>`;
+   }
+   return `<div class="rule ${cls}"><div class="rtop"><span class="rid">${x.rule.id}</span><span class="rres ${cls}">${rlbl}</span></div>
+     <div class="rst">${tw(x.rule.statement)}</div>${ev}</div>`;
+ };
+ const cross=rr.filter(x=>x.rule.scope==="cross");
+ const tareks=rr.filter(x=>x.rule.scope==="tareks"&&x.res.applies!==false);
+ let html=`<h2 class="sh">${l.rulesTitle}</h2><p class="ssub">${l.rulesDesc}</p>
+   <div class="rsummary">
+     <div class="rstat"><div class="n">${b+w+o}</div><div class="l">${l.evaluated}</div></div>
+     <div class="rstat o"><div class="n">${o}</div><div class="l">${l.passed}</div></div>
+     <div class="rstat b"><div class="n">${b}</div><div class="l">${l.cBlock}</div></div>
+     <div class="rstat w"><div class="n">${w}</div><div class="l">${l.cWarn}</div></div>
+   </div>
+   <div class="rgroup">${l.grpCross}</div>${cross.map(card).join("")}`;
+ if(tareks.length)html+=`<div class="rgroup">${l.grpTareks}</div>${tareks.map(card).join("")}`;
+ html+=`<div class="flowbar"><button class="btn ghost" onclick="goStage('extract')">← ${l.back}</button>
+   <button class="btn primary" onclick="goStage('results')">${l.toResults} →</button></div>`;
+ return html;
+}
+
+/* ---- results view ---- */
+function renderResults(s,l){
+ const key=statusKey(s),sc=statusCls(key),c=counts(s);
+ const sub=sc==="s-block"?l.subBlock:sc==="s-warn"?l.subWarn:l.subOk;
+ const ing=INTAKE[s.id];
+ const verdict=`<div class="verdict ${sc}"><div class="vstripe"></div><div class="vbody">
+   <div class="vmain"><div class="vstatus"><span class="vdot"></span><h1>${l[key]}</h1></div>
+     <p class="vsub">${sub}</p>
+     <div class="chips">
+       <span class="chip"><span class="mono">${s.id}</span></span>
+       <span class="chip">${l.route}: <b>${s.route}</b></span>
+       <span class="chip">${l.incoterm}: <b>${s.incoterm}</b></span>
+       <span class="chip">${l.gtip}: <b class="mono">${s.gtip}</b></span>
+       <span class="chip">${l.arrived}: <b>${chLabel(ing.events[0].channel,l)} · ${ing.events[0].ts}</b></span>
+     </div></div>
+   <div class="counts">
+     <div class="count b"><div class="n">${c.block}</div><div class="l">${l.cBlock}</div></div>
+     <div class="count w"><div class="n">${c.warn}</div><div class="l">${l.cWarn}</div></div>
+     <div class="count o"><div class="n">${c.ok}</div><div class="l">${l.cOk}</div></div>
+   </div></div></div>`;
+ const tabs=[["cross",l.tabCross]];
+ if(s.type==="import"&&s.tareks)tabs.push(["tareks",l.tabTareks]);
+ tabs.push(["audit",l.tabAudit]);tabs.push(["report",l.tabReport]);
+ if(!tabs.find(t=>t[0]===state.resultsTab))state.resultsTab="cross";
+ const tabbar=`<div class="tabs">${tabs.map(t=>`<button class="tab" aria-selected="${state.resultsTab===t[0]}" onclick="setRTab('${t[0]}')">${t[1]}</button>`).join("")}</div>`;
+ let body="";
+ if(state.resultsTab==="cross")body=renderFindings(s,l,"cross");
+ else if(state.resultsTab==="tareks")body=renderFindings(s,l,"tareks");
+ else if(state.resultsTab==="audit")body=renderAudit(s,l);
+ else body=renderReport(s,l);
+ const nav=`<div class="flowbar"><button class="btn ghost" onclick="goStage('rules')">← ${l.back}</button>
+   <button class="btn ghost" onclick="goStage('upload')">${l.reprocess}</button></div>`;
+ return verdict+tabbar+body+nav;
+}
+function renderFindings(s,l,scope){
+ const r=state.resolved[s.id];
+ const order={block:0,warn:1,ok:2};
+ const fs=findings(s).filter(f=>f.scope===scope).sort((a,b)=>order[a.sev]-order[b.sev]);
+ if(!fs.length)return `<p style="color:var(--ink-faint)">—</p>`;
+ return fs.map(f=>{
+   const resolved=r.has(f.id);
+   const inp=f.rule.inputs||[],vals=f.res.vals||[];
+   let cmp="";
+   if(f.sev!=="ok"&&inp.length&&vals.length){
+     cmp=`<div class="compare">${inp.map((ip,i)=>{const dl=DOCLABELS[ip[0]]?tw(DOCLABELS[ip[0]]):ip[0];const lb=f.res.lbls?tw(f.res.lbls[i]):dl;const bad=f.res.bad&&f.res.bad[i];return `<div class="cmp ${bad?'bad':''}"><div class="cd">${lb}</div><div class="cv">${vals[i]!=null?vals[i]:'—'}</div></div>`;}).join("")}</div>`;
+   }
+   const sevlbl=f.sev==="block"?l.cBlock:f.sev==="warn"?l.cWarn:l.cOk;
+   const action=f.sev==="ok"?"":`<button class="resolve ${resolved?'done':''}" onclick="toggleResolve('${f.id}')">${resolved?l.resolvedW:l.markResolved}</button>`;
+   return `<div class="finding ${f.sev} ${resolved?'resolved':''}"><div class="fhead"><span class="sev ${f.sev}">${sevlbl}</span>
+     <div class="ftitle"><div class="ft">${tw(f.rule.short)}</div><div class="fd">${tw(f.rule.statement)}</div>
+       <div class="rref">${l.ruleRef}: ${f.rule.id}</div>${cmp}
+       ${action?`<div class="fmeta">${action}</div>`:""}</div></div></div>`;
+ }).join("");
+}
+function renderAudit(s,l){
+ const audit=state.results[s.id].audit;
+ const live=(state.results[s.id].live||[]);
+ return `<div class="audit-intro">${l.auditIntro}</div>`+audit.concat(live).map(e=>{
+   const isLive=live.indexOf(e)>=0;
+   const al=e.actor==="ai"?l.actorAI:e.actor==="user"?l.actorUser:e.actor==="rule"?l.actorRule:l.actorSystem;
+   const meta=[];if(e.model)meta.push(`${l.model}: ${e.model}`);if(typeof e.conf==="number")meta.push(`${e.conf}%`);if(e.ruleId)meta.push(e.ruleId);
+   const mh=meta.length?`<div class="ameta">${meta.map(m=>`<span>${m}</span>`).join("")}</div>`:"";
+   const det=e.detail?`<div class="ad">${tw(e.detail)}</div>`:"";
+   return `<div class="aud${isLive?' live':''}"><div class="arail"><span class="actor ${e.actor}">${al}</span><span class="at">${e.ts}</span></div>
+     <div class="abody"><div class="aa">${tw(e.action)}</div>${det}${mh}</div></div>`;
+ }).join("");
+}
+function renderReport(s,l){
+ const r=state.resolved[s.id];const key=statusKey(s);
+ const fs=findings(s);
+ const blocks=fs.filter(f=>f.sev==="block"&&!r.has(f.id)).map(f=>tw(f.rule.short));
+ const warns=fs.filter(f=>f.sev==="warn"&&!r.has(f.id)).map(f=>tw(f.rule.short));
+ const oks=fs.filter(f=>f.sev==="ok").map(f=>tw(f.rule.short));
+ const li=a=>a.length?a.map(x=>`<li>${x}</li>`).join(""):`<li>${l.none}</li>`;
+ return `<div class="report"><h3>${l.reportTitle} · ${s.id}</h3>
+   <div class="rmeta">${s.route} · ${s.incoterm} · ${l.gtip} ${s.gtip} · ${l.generated}: 2026-09-06</div>
+   <div style="font-weight:800;color:var(--${statusCls(key)==='s-block'?'block':statusCls(key)==='s-warn'?'warn':'ok'})">${l[key]}</div>
+   <div class="rsec"><div class="rh">${l.blocking}</div><ul>${li(blocks)}</ul></div>
+   <div class="rsec"><div class="rh">${l.warnings}</div><ul>${li(warns)}</ul></div>
+   <div class="rsec"><div class="rh">${l.passedW}</div><ul>${li(oks)}</ul></div>
+   <div class="rfoot">${l.reportFoot}</div></div>
+   <div class="reptools"><button class="btn primary" id="copybtn" onclick="copyReport()">${l.copy}</button></div>`;
+}
+function reportText(s,l){
+ const r=state.resolved[s.id];const fs=findings(s);
+ const lines=[l.reportTitle+" — "+s.id,s.route+" · "+s.incoterm+" · "+l.gtip+" "+s.gtip,l.generated+": 2026-09-06","> "+l[statusKey(s)],""];
+ lines.push(l.blocking+":");const b=fs.filter(f=>f.sev==="block"&&!r.has(f.id)).map(f=>tw(f.rule.short));(b.length?b:[l.none]).forEach(x=>lines.push("  - "+x));
+ lines.push("",l.warnings+":");const w=fs.filter(f=>f.sev==="warn"&&!r.has(f.id)).map(f=>tw(f.rule.short));(w.length?w:[l.none]).forEach(x=>lines.push("  - "+x));
+ lines.push("",l.reportFoot);return lines.join("\n");
+}
+function copyReport(){const s=cur(),l=L(),btn=document.getElementById("copybtn");const done=()=>{btn.textContent=l.copied;setTimeout(()=>btn.textContent=l.copy,1500);};try{navigator.clipboard.writeText(reportText(s,l)).then(done,done);}catch(e){done();}}
+
+/* ================= events ================= */
+function setLang(x){state.lang=x;document.getElementById("lang-tr").setAttribute("aria-pressed",x==="tr");document.getElementById("lang-en").setAttribute("aria-pressed",x==="en");document.documentElement.lang=x;render();}
+function goStage(st){if(state.reached[cur().id]<STAGES.indexOf(st))return;state.stage=st;render();}
+function setExDoc(i){state.exDoc[cur().id]=i;render();}
+function setRTab(t){state.resultsTab=t;render();}
+function toggleResolve(id){
+ const s=cur(),l=L(),set=state.resolved[s.id];const f=findings(s).find(x=>x.id===id);
+ const marking=!set.has(id);if(marking)set.add(id);else set.delete(id);
+ if(!state.results[s.id].live)state.results[s.id].live=[];
+ state.results[s.id].live.push({ts:nowTime(),actor:"user",action:{tr:(marking?"Bulgu incelendi işaretlendi":"Bulgu işareti kaldırıldı")+": "+tw(f.rule.short),en:(marking?"Finding marked reviewed":"Finding review removed")+": "+tw(f.rule.short)}});
+ render();
+}
+function chooseBundle(id){
+ state.shipId=id;state.exDoc[id]=0;state.resultsTab="cross";state.resolved[id]=new Set();
+ state.processing=true;state.procStep=0;render();
+ const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+ const total=6;
+ if(reduce){process();state.processing=false;state.stage="extract";render();return;}
+ const iv=setInterval(()=>{
+   state.procStep++;
+   if(state.procStep>=total){clearInterval(iv);process();state.processing=false;state.stage="extract";render();}
+   else render();
+ },380);
+}
+document.getElementById("shipsel").addEventListener("change",e=>{
+ state.shipId=e.target.value;
+ if(state.reached[state.shipId]>=3){state.stage="results";state.resultsTab="cross";}
+ else state.stage="upload";
+ render();
+});
+
+render();
+</script>
