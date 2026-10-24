@@ -238,8 +238,12 @@ const BOLUMLER = [
   { id:'G7', tur:'metin', metin:'A.TR, AQAP / GMP belgesi ya da geri gelen eşya gibi özel durumlarda hangi kanıtı dosyada görmek istersiniz?' },
 ]},
 { id:'H', baslik:'H. Tıbbi cihaz ithalatı', alt:'Yaklaşık 10 dakika. Tıbbi Cihazların İthalat Denetimi Tebliği (ÜGD 2026/16).', atla:true, sorular:[
-  { id:'H1', tur:'metin', metin:'GTİP listede olsa bile ürün tıbbi cihaz değilse kapsam dışı sayılıyor. Bunu dosyada hangi belgeyle gösteriyorsunuz?' },
-  { id:'H2', tur:'metin', metin:'Listedeki bazı satırlarda “yalnız”, “sadece”, “hariç” gibi şartlar var. Ürünün kullanım amacını ya da sınıfını hangi belgeden öğreniyorsunuz?' },
+  { id:'H1', tur:'metin', metin:'GTİP listede olsa bile ürün tıbbi cihaz değilse kapsam dışı sayılıyor. Bunu dosyada hangi belgeyle gösteriyorsunuz?',
+    ornek:[['Örnek durum', 'Listedeki bir GTİP ile gelen ürün hastada değil, laboratuvarda yalnızca araştırma amacıyla kullanılacak.'],
+           ['Örnek cevap', 'TAREKS\'te kapsam dışı beyanı yapıyoruz. Ekine üreticinin ürünün tıbbi cihaz olmadığını ve kullanım amacını yazan yazısını, etiketteki “Research Use Only” ibaresinin fotoğrafını koyuyoruz.']] },
+  { id:'H2', tur:'metin', metin:'Listedeki bazı satırlarda “yalnız”, “sadece”, “hariç” gibi şartlar var. Ürünün kullanım amacını ya da sınıfını hangi belgeden öğreniyorsunuz?',
+    ornek:[['Örnek satır', '3005.10.00.00.00 yalnızca “tıbbi cihaz olarak kullanılan yara bandı ve flasterler” için geçerli. Aynı koddaki başka bir yapışkan sargı listeye girmeyebilir.'],
+           ['Örnek cevap', 'Sınıfı AB Uygunluk Beyanından (Sınıf I, IIa, IIb, III) ve varsa onaylanmış kuruluş sertifikasından öğreniyoruz. Kullanım amacı için kullanım kılavuzuna ya da ürün kataloğuna bakıyoruz. Faturadaki tanım çoğu zaman yetmiyor.']] },
   { id:'H3', tur:'metin', metin:'Tebliğde geçen “ilgili AB belgesi ya da belgeleri” hangi ürünlerde isteniyor? (Örneğin onaylanmış kuruluş sertifikası)' },
   { id:'H4', tur:'yn', metin:'Türkçe etiket ve kullanım kılavuzu her tıbbi cihazda isteniyor mu?' },
   { id:'H5', tur:'yn', metin:'A.TR ile gelen tıbbi cihazlarda belge eksiği bilgi notu olarak gösterilsin mi?' },
@@ -290,6 +294,7 @@ document.getElementById('bolumler').innerHTML = BOLUMLER.map(b =>
     `<div class="soru" data-soru="${s.id}"><div class="no">${s.id}</div><div class="metin">${esc(s.metin)}</div>` +
     (s.aciklama || '') +
     (s.neden ? `<p class="neden">Neden soruyoruz: ${esc(s.neden)}</p>` : '') +
+    (s.ornek || []).map(([b, t]) => `<p class="neden"><b>${esc(b)}:</b> ${esc(t)}</p>`).join('') +
     cevapAlani(s) +
     (['yn', 'tek'].includes(s.tur) ? `<div class="ek"><input type="text" name="${s.id}.not" placeholder="Açıklama (isteğe bağlı)" aria-label="${esc(s.id)} açıklama"></div>` : '') +
     `</div>`).join('') + `</section>`).join('');
