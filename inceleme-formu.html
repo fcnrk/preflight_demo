@@ -118,9 +118,9 @@
 <p class="alt">Yaklaşık 45–60 dakika. Yalnızca makine ithalatıyla çalışıyorsanız.</p>
 <label class="atla"><input type="checkbox" name="K.atla" id="kAtla"> Bu bölümü atlıyorum</label>
 <div class="k-icerik">
-<p>Makine tablosunda bir hata en pahalıya bu 52 satırda çıkar: Ek-2/A listesinin tamamı (ürün fotoğrafı isteniyor) ve Tip Onay Belgesi ya da Gürültü Sertifikası gerektiren satırlar.</p>
+<p>Makine tablosundaki bir hatanın en çok bu 52 satırda soruna yol açacağını öngörüyoruz. Bunlar Ek-2/A listesinin tamamı (taslağımıza göre bu satırlarda ürün fotoğrafı da isteniyor) ile Tip Onay Belgesi ya da Gürültü Sertifikası gerektirdiğini düşündüğümüz satırlar.</p>
 <p>Lütfen <b>en az 10 tanesini</b> tebliğin Resmî Gazete nüshasıyla (31/12/2025, sayı 33124, 4. Mükerrer) karşılaştırın. GTİP ve ürün adı doğru aktarılmış mı, ilgili yönetmelikler doğru mu, buna göre aranacak belgeler doğru mu?</p>
-<p class="note">Bu kontrol, makine tablosunu kullanıma almadan önce gereken adımlardan biri. Resmî onayı ayrıca imzalı bir formla isteyeceğiz.</p>
+<p class="note">Bu kontrol, makine tablosunu kullanıma almadan önce gereken adımlardan biri.</p>
 <p class="ilerleme">Kontrol ettiğiniz satır: <span id="kSay">0</span> / 52 (en az 10)</p>
 <table class="matris" id="kTablo"><thead><tr><th>GTİP</th><th>Liste</th><th>Ürün</th><th>İlgili yönetmelikler</th><th>Aranacak belgeler</th><th>Sizce doğru mu?</th></tr></thead><tbody></tbody></table>
 </div>
@@ -250,11 +250,11 @@ const BOLUMLER = [
   { id:'H6', tur:'tek', metin:'Kullanılmış ya da yenilenmiş tıbbi cihaz ne sıklıkla geliyor?', secenek:SIKLIK },
   { id:'H7', tur:'metin', metin:'Uygunluk beyanı ya da test raporunu gerçekten yetkili kişinin düzenlediğini nasıl kontrol ediyorsunuz?' },
 ]},
-{ id:'I', baslik:'I. Birlikte çalışma', alt:'Yaklaşık 5 dakika.', atla:false, sorular:[
-  { id:'I1', tur:'metin', metin:'Önümüzdeki 6–8 haftanın sonunda yazılım ne yapıyor olmalı ki “bunu her gün kullanırım” diyesiniz?' },
+{ id:'I', baslik:'I. Birlikte çalışma', alt:'Bundan sonrası için birkaç soru.', atla:false, sorular:[
+  { id:'I1', tur:'metin', metin:'Yazılım ne yapıyor olmalı ki “bunu her gün kullanırım” diyesiniz?' },
   { id:'I2', tur:'yn', metin:'Birkaç dosyayı önce bugünkü yönteminizle, sonra yazılımla kontrol edip süreleri karşılaştırmamıza izin verir misiniz?' },
   { id:'I3', tur:'yn', metin:'Makine (ya da başka bir ürün grubu) tablosunu ikinci kez kontrol edebilecek bir meslektaş ya da danışman önerebilir misiniz?', neden:'İsim yazmanız gerekmiyor; önerebiliyorsanız sizinle ayrıca konuşuruz.' },
-  { id:'I4', tur:'kisa', metin:'Kasım sonunda kendi dosyalarınızın sonuçlarına birlikte bakacağımız 1–1,5 saatlik bir görüşme için uygun olduğunuz günler?' },
+  { id:'I4', tur:'kisa', metin:'Kendi dosyalarınızın sonuçlarına birlikte bakacağımız bir görüşme için hangi günler size uygun?' },
   { id:'I5', tur:'metin', metin:'Eklemek istediğiniz başka bir şey var mı?' },
 ]},
 ];
