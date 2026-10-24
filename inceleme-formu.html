@@ -84,7 +84,7 @@
 
 <h2>Nasıl doldurulur?</h2>
 <ul>
-<li><b>Süre:</b> A–I bölümleri 60–90 dakika. Son iki bölüm (J ve K) isteğe bağlı. Bölümler birbirinden bağımsız; bir oturumda bitirmeniz gerekmiyor.</li>
+<li><b>Süre:</b> Soruların çoğu tek tıkla cevaplanıyor; A–I bölümleri yaklaşık 30 dakika sürer. Size uzak bölümleri atlarsanız daha da kısalır. Son iki bölüm (J ve K) isteğe bağlı. Bir oturumda bitirmeniz gerekmiyor.</li>
 <li><b>Atlayabilirsiniz:</b> Uzak olduğunuz bir konu varsa (örneğin tıbbi cihaz) bölüm başındaki “Bu konuda deneyimim yok” kutusunu işaretleyin.</li>
 <li><b>Kayıt:</b> Cevaplarınız yalnızca bu bilgisayardaki tarayıcıda saklanır. Sayfayı kapatıp açtığınızda kaldığınız yerden devam edersiniz.</li>
 <li><b>Gönderme:</b> Bitirince alttaki <b>“Cevapları dosyaya kaydet”</b> düğmesine basın. Bilgisayarınıza bir dosya iner; o dosyayı bize iletmeniz yeterli. Sayfa hiçbir bilgiyi kendiliğinden göndermez.</li>
@@ -151,7 +151,7 @@ const YN = ['Evet', 'Hayır', 'Emin değilim'];
 const SIKLIK = ['Sık', 'Ara sıra', 'Nadiren', 'Hiç görmedim'];
 
 const BOLUMLER = [
-{ id:'A', baslik:'A. Sizi tanıyalım', alt:'Yaklaşık 5 dakika. İsim istemiyoruz.', atla:false, sorular:[
+{ id:'A', baslik:'A. Sizi tanıyalım', alt:'İsim istemiyoruz.', atla:false, sorular:[
   { id:'A1', tur:'tek', metin:'Bu işteki rolünüz nedir?', secenek:['Gümrük müşaviri','Gümrük müşavir yardımcısı','Operasyon / dosya sorumlusu','Danışman','Diğer'] },
   { id:'A2', tur:'tek', metin:'Kaç yıldır bu alanda çalışıyorsunuz?', secenek:['5 yıldan az','5–10 yıl','10–20 yıl','20 yıldan fazla'] },
   { id:'A3', tur:'cok', metin:'Hangi tür dosyalarla çalışıyorsunuz?', neden:'Hangi bölümleri doldurmanız gerektiğini buna göre görebilirsiniz.', secenek:['İhracat','Makine ithalatı','Elektrikli / elektronik eşya ithalatı','Tıbbi cihaz ithalatı','Diğer ithalat'] },
@@ -159,7 +159,7 @@ const BOLUMLER = [
   { id:'A5', tur:'kisa', metin:'Beyanname için hangi yazılımı kullanıyorsunuz?', neden:'Örneğin Evrim ya da başka bir paket. İleride verileri tekrar yazmadan alabilmek için soruyoruz.' },
   { id:'A6', tur:'yn', metin:'Bu yazılımdan dosya bilgilerini Excel, XML ya da başka bir dosya olarak dışarı alabiliyor musunuz?' },
 ]},
-{ id:'B', baslik:'B. Bugün işler nasıl yürüyor?', alt:'Yaklaşık 10 dakika.', atla:false, sorular:[
+{ id:'B', baslik:'B. Bugün işler nasıl yürüyor?', alt:'', atla:false, sorular:[
   { id:'B1', tur:'tek', metin:'Basit bir ihracat dosyasının belgelerini kontrol etmek ortalama ne kadar sürüyor?', secenek:['10 dakikadan az','10–30 dakika','30–60 dakika','1 saatten fazla'] },
   { id:'B2', tur:'tek', metin:'TAREKS\'e tabi bir ithalat dosyasında bu süre ne kadar?', secenek:['30 dakikadan az','30–60 dakika','1–3 saat','3 saatten fazla','Bu tür dosyam yok'] },
   { id:'B3', tur:'cok', metin:'Belgeler size genellikle nasıl ulaşıyor?', secenek:['E-posta','WhatsApp','Kurye / elden','Müvekkilin portalı','Diğer'] },
@@ -168,7 +168,7 @@ const BOLUMLER = [
   { id:'B6', tur:'yn', metin:'Bir dosyanın belgeleri genellikle parça parça mı geliyor?', neden:'Yazılımın eksik bir dosyayı ne zaman kontrol etmesi gerektiğini anlamak için.' },
   { id:'B7', tur:'metin', metin:'Kontrol ederken en çok neye dikkat ediyorsunuz? Sizin için “asla kaçmamalı” olan nedir?' },
 ]},
-{ id:'C', baslik:'C. Hangi hatalar ne kadar önemli?', alt:'Yaklaşık 10 dakika. Yazılımın bugün kontrol ettiği noktalar bunlar. Her satır için iki şey seçin.', atla:false, sorular:[
+{ id:'C', baslik:'C. Hangi hatalar ne kadar önemli?', alt:'Yazılımın bugün kontrol ettiği noktalar bunlar. Her satır için iki şey seçin.', atla:false, sorular:[
   { id:'C1', tur:'matris', metin:'Bu hatalar ne sıklıkla karşınıza çıkıyor, çıktığında yazılım ne yapmalı?',
     sutunlar:[['Ne sıklıkla?', SIKLIK], ['Çıkarsa yazılım ne yapmalı?', ['Engel','Uyarı','Bilgi notu','Gerek yok','Emin değilim']]],
     satirlar:[
@@ -191,14 +191,14 @@ const BOLUMLER = [
   { id:'C3', tur:'tek', metin:'Yazılım test raporunu kaç yıldan eskiyse “eski” saymalı?', neden:'Şu an 2 yıl kullanıyoruz; bu bir mevzuat kuralı değil, bizim varsayımımız.', secenek:['1 yıl','2 yıl','3 yıl','5 yıl','Yaşı önemli değil','Emin değilim'] },
   { id:'C4', tur:'tek', metin:'Gereksiz bir uyarıya (aslında sorun olmayan) dosya başına en fazla kaç kez katlanırsınız?', secenek:['Hiç','1','2–3','Daha fazla, yeter ki gerçek hatayı kaçırmasın'] },
 ]},
-{ id:'D', baslik:'D. Sonuç ekranı nasıl görünmeli?', alt:'Yaklaşık 5 dakika.', atla:false, sorular:[
+{ id:'D', baslik:'D. Sonuç ekranı nasıl görünmeli?', alt:'', atla:false, sorular:[
   { id:'D1', tur:'yn', metin:'Yazılım hiçbir dosya için “Dosya hazır” demeyecek. Sorun bulamadığında “Kontrol ettiğimiz noktalarda engel bulunmadı” diyecek ve kontrol ettiği noktaları listeleyecek. Bu ifade size açık geliyor mu?', neden:'Yazılım her şeyi kontrol etmiyor; “hazır” demek yanlış bir güven verebilir.' },
   { id:'D2', tur:'yn', metin:'Bilgi eksik olduğu için bazı kontroller yapılamadıysa yazılım bunu açıkça “Kontrol tamamlanamadı: eksik bilgi var” diye göstersin mi?' },
   { id:'D3', tur:'yn', metin:'Yazılımın bilmediği bir ürün grubu için “Bu ürün için kontrolümüz yok” demesi işinize yarar mı?' },
   { id:'D4', tur:'yn', metin:'Her uyarının yanında dayandığı mevzuat maddesi yazsın mı?', neden:'Örneğin “ÜGD 2026/32, Madde 10”. Mevzuata dayanmayan kontrollerde “bizim kuralımız” yazacak.' },
   { id:'D5', tur:'cok', metin:'Sonucu hangi biçimde almak istersiniz?', secenek:['Ekranda','PDF rapor','Excel','E-posta'] },
 ]},
-{ id:'E', baslik:'E. Örnek dosya paylaşımı', alt:'Yaklaşık 5 dakika. İlk dosyayı göndermeden önce bu bölümü cevaplamanızı rica ediyoruz.', atla:false, sorular:[
+{ id:'E', baslik:'E. Örnek dosya paylaşımı', alt:'İlk dosyayı göndermeden önce bu bölümü cevaplamanızı rica ediyoruz.', atla:false, sorular:[
   { id:'E1', tur:'tek', metin:'Müvekkil belgelerini bizimle paylaşmak için neye ihtiyacınız var?', secenek:['Müvekkilin yazılı izni','Kişi bilgilerini karartmam yeterli','Emin değilim, bir hukukçuya sormam gerekir'] },
   { id:'E2', tur:'tek', metin:'Kişi bilgilerini (isim, imza, telefon, e-posta, kimlik no) kim karartsın?', secenek:['Ben karartırım','Sizinle birlikte yapalım','Emin değilim'] },
   { id:'E3', tur:'yn', metin:'Şirket adlarının açık kalmasında sakınca var mı?', neden:'Sakınca varsa her şirkete aynı dosya içinde tutarlı bir takma ad veririz (“ALICI-A” gibi). Aksi hâlde alıcı karşılaştırması test edilemez.' },
@@ -206,7 +206,7 @@ const BOLUMLER = [
   { id:'E5', tur:'tek', metin:'İlk aşamada yaklaşık kaç dosya paylaşabilirsiniz?', secenek:['5\'ten az','5–20','20–50','50\'den fazla'] },
   { id:'E6', tur:'yn', metin:'Her dosya için “ne bulduğunuzu, nasıl fark ettiğinizi ve sonucunu” kısaca not edebilir misiniz?', neden:'Sorunsuz geçen dosyalar da en az sorunlu olanlar kadar değerli. Gümrükte ortaya çıkan, önceden fark edilmemiş hatalar ise en öğretici örnekler.' },
 ]},
-{ id:'F', baslik:'F. Makine ithalatı (TAREKS)', alt:'Yaklaşık 15 dakika. Makinaların İthalat Denetimi Tebliği (ÜGD 2026/32).', atla:true, sorular:[
+{ id:'F', baslik:'F. Makine ithalatı (TAREKS)', alt:'Makinaların İthalat Denetimi Tebliği (ÜGD 2026/32).', atla:true, sorular:[
   { id:'F1', tur:'yn', metin:'Yazılım makine ithalatında şu belgeleri arıyor. Bu mantık doğru mu?',
     aciklama:'<ul><li>Her makine için: <b>AB Uygunluk Beyanı</b> ve üründe <b>CE işareti + ithalatçı bilgisi</b></li><li>Listede “Emisyon” ya da “Tarım Makinaları” yazıyorsa ayrıca: <b>Tip Onay Belgesi</b></li><li>Listede “Gürültü” yazıyorsa ayrıca: <b>Gürültü Sertifikası</b></li><li>Ürün Ek-2/A listesindeyse ayrıca: <b>ürün fotoğrafları</b></li></ul>' },
   { id:'F2', tur:'yn', metin:'Test raporu makine için zorunlu belgeler arasında sayılmıyor; yalnızca denetim istediğinde gerekiyor. Bu yüzden yokluğu engel sayılmıyor. Doğru mu?' },
@@ -219,7 +219,7 @@ const BOLUMLER = [
   { id:'F9', tur:'metin', metin:'Listede en sık karşınıza çıkan makine türleri ya da GTİP\'ler hangileri? (En fazla 20)', neden:'Önce sahada işe yarayan satırları doğrulamak istiyoruz.' },
   { id:'F10', tur:'metin', metin:'AB\'nin yeni Makine Tüzüğü (2023/1230) için Türkiye\'de bir taslak ya da takvim duydunuz mu? 11/7/2026 tarihli değişiklik (ÜGD 2026/41) sahada bir fark yarattı mı?' },
 ]},
-{ id:'G', baslik:'G. Elektrikli ve elektronik eşya ithalatı', alt:'Yaklaşık 15 dakika. Elektrikli ürünler (ÜGD 2026/9), telsiz cihazlar (ÜGD 2026/8), piller (ÜGD 2026/15).', atla:true, sorular:[
+{ id:'G', baslik:'G. Elektrikli ve elektronik eşya ithalatı', alt:'Elektrikli ürünler (ÜGD 2026/9), telsiz cihazlar (ÜGD 2026/8), piller (ÜGD 2026/15).', atla:true, sorular:[
   { id:'G1', tur:'metin', metin:'Aynı GTİP\'te ürünün özelliği sonucu değiştirebiliyor. Örneğin 8507.60.00.00.40 bir listede powerbank için geçerli, başka bir listede powerbank hariç tutuluyor. Ürünün özelliğini (powerbank mi, Wi-Fi\'si var mı, ne amaçla kullanılıyor) hangi belgeden öğreniyorsunuz?' },
   { id:'G2', tur:'yn', metin:'Adaptörle çalışan ürünlerde ürün ve adaptör ayrı ayrı mı değerlendiriliyor?' },
   { id:'G3', tur:'yn', metin:'Fiili denetimde AB Uygunluk Beyanı ve onaylı Türkçe tercümesi isteniyor. Test raporu her elektronik üründe sabit olarak istenmiyor. Bu doğru mu?' },
@@ -237,7 +237,7 @@ const BOLUMLER = [
   { id:'G6', tur:'metin', metin:'11/7/2026 değişiklikleri (akıllı saat, kablosuz kulaklık, hareket algılayan anahtar) sahada bir fark yarattı mı?' },
   { id:'G7', tur:'metin', metin:'A.TR, AQAP / GMP belgesi ya da geri gelen eşya gibi özel durumlarda hangi kanıtı dosyada görmek istersiniz?' },
 ]},
-{ id:'H', baslik:'H. Tıbbi cihaz ithalatı', alt:'Yaklaşık 10 dakika. Tıbbi Cihazların İthalat Denetimi Tebliği (ÜGD 2026/16).', atla:true, sorular:[
+{ id:'H', baslik:'H. Tıbbi cihaz ithalatı', alt:'Tıbbi Cihazların İthalat Denetimi Tebliği (ÜGD 2026/16).', atla:true, sorular:[
   { id:'H1', tur:'metin', metin:'GTİP listede olsa bile ürün tıbbi cihaz değilse kapsam dışı sayılıyor. Bunu dosyada hangi belgeyle gösteriyorsunuz?',
     ornek:[['Örnek durum', 'Listedeki bir GTİP ile gelen ürün hastada değil, laboratuvarda yalnızca araştırma amacıyla kullanılacak.'],
            ['Örnek cevap', 'TAREKS\'te kapsam dışı beyanı yapıyoruz. Ekine üreticinin ürünün tıbbi cihaz olmadığını ve kullanım amacını yazan yazısını, etiketteki “Research Use Only” ibaresinin fotoğrafını koyuyoruz.']] },
@@ -288,7 +288,7 @@ function cevapAlani(s) {
 }
 
 document.getElementById('bolumler').innerHTML = BOLUMLER.map(b =>
-  `<section class="bolum" id="b-${b.id}"><h2>${esc(b.baslik)}</h2><p class="alt">${esc(b.alt)}</p>` +
+  `<section class="bolum" id="b-${b.id}"><h2>${esc(b.baslik)}</h2>` + (b.alt ? `<p class="alt">${esc(b.alt)}</p>` : '') +
   (b.atla ? `<label class="atla"><input type="checkbox" name="${b.id}.atla" data-atla="${b.id}"> Bu konuda deneyimim yok, bu bölümü atlıyorum</label>` : '') +
   b.sorular.map(s =>
     `<div class="soru" data-soru="${s.id}"><div class="no">${s.id}</div><div class="metin">${esc(s.metin)}</div>` +
